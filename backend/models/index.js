@@ -14,7 +14,6 @@ const sequelize = new Sequelize(
   config
 );
 
-// Leer todos los archivos de modelos en la carpeta 'models' y agregarlos al objeto db
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
