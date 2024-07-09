@@ -1,7 +1,24 @@
 const { models } = require("../libs/sequelize");
+const bcrypt = require("bcryptjs");
 
 class UsersService {
   constructor() {}
+
+  async register(userData) {
+    const { name, email, password } = userData;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await models.User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+    return user;
+  }
+
+  async findByEmail(email) {
+    return models.User.findOne({ where: { email } });
+  }
 
   async findAll() {
     try {

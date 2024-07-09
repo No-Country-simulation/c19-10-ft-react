@@ -31,7 +31,7 @@ const userSchema = {
     field: "email",
   },
   password: {
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.STRING,
     field: "password",
   },
