@@ -12,8 +12,7 @@ const sequelize = new Sequelize(
     dialect: "postgresql",
   }
 );
-
-sequelize.sync();
 setupModels(sequelize);
+sequelize.sync();
 
 module.exports = sequelize;

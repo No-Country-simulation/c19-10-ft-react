@@ -1,6 +1,37 @@
 const UsersService = require("../services/users.service");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const service = new UsersService();
+const usersService = new UsersService();
+
+require("dotenv").config();
+const { JWT_SECRET } = process.env;
+
+const register = async (req, res) => {
+  try {
+    const user = await usersService.register(req.body);
+
+    res.status(201).json({ message: "User registered successfully", user });
+  } catch (error) {
+    res.status(400).json({ message: "Error registering user", error });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await usersService.findByEmail(email);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
+      expiresIn: "30m",
+    });
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    res.status(400).json({ message: "Error logging in", error });
+  }
+};
 
 const create = async (req, res) => {
   try {
@@ -57,6 +88,8 @@ const _delete = async (req, res) => {
 };
 
 module.exports = {
+  register,
+  login,
   create,
   get,
   getById,
