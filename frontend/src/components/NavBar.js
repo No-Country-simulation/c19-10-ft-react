@@ -1,7 +1,8 @@
-import NavLink from "./UI/NavLink";
-import Button from "./UI/Button";
 import Image from "next/image";
 import Logo from "../../public/Celebria-logo.webp";
+import NavLink from "./UI/NavLink"; 
+import Button from "./UI/Button";
+import Link from 'next/link'; 
 
 const NavBar = () => {
   return (
@@ -16,7 +17,11 @@ const NavBar = () => {
             <NavLink text="PROVEEDORES" />
             <NavLink text="TU EVENTO" />
             <NavLink text="INVITACIONES" />
-            <Button text="ACCEDER" />
+            
+            <Link href="/login" passHref>
+              <Button text="ACCEDER" />
+            </Link>
+            
             <Button text="REGISTRARTE" />
           </div>
         </div>
