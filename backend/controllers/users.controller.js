@@ -33,16 +33,6 @@ const login = async (req, res) => {
   }
 };
 
-const create = async (req, res) => {
-  try {
-    console.log("Creating user");
-    // const response = await service.create(req.body);
-    // res.json({ success: true, data: response });
-  } catch (error) {
-    res.status(500).send({ success: false, message: error.message });
-  }
-};
-
 const get = async (req, res) => {
   try {
     console.log("Looking for users");
@@ -90,7 +80,6 @@ const _delete = async (req, res) => {
 module.exports = {
   register,
   login,
-  create,
   get,
   getById,
   update,

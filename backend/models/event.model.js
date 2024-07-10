@@ -29,12 +29,12 @@ const eventSchema = {
         allowNull: false,
         type: DataTypes.STRING,
         field: "description"
-    }
-    // fecha: {
-    //     allowNull: false,
-    //     type: DataTypes.DATE,
-    //     field: "fecha"
-    // },
+    },
+    date: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        field: "date"
+    },
 }
 
 module.exports = {

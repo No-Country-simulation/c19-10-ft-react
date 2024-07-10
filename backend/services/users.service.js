@@ -24,7 +24,6 @@ class UsersService {
     }
   }
 
-
   async findByEmail(email) {
       return await models.User.findOne({ where: { email } });
     }
@@ -41,15 +40,6 @@ class UsersService {
       try {
         console.log("User finded");
         //   return await models.User.findByPk(id);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-  async create(data) {
-      try {
-        console.log("User created");
-        //   return await models.User.create(data);
       } catch (error) {
         console.error(error);
       }
