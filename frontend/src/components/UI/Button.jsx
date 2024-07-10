@@ -10,3 +10,5 @@ const Button = ({ text, redirect, className }) => (
     {text}
   </button>
 );
+
+export default Button;

@@ -6,7 +6,7 @@ const MenuOption = ({ logo, alt, label }) => {
       <button className=" flex justify-center items-center rounded-full min-w-[60px] min-h-[60px] bg-background hover:scale-110 transition-all duration-150">
         <Image src={logo} width={40} height={40} alt={alt} />
       </button>
-      <p className="text-secondary text-lg">{label}</p>
+      <p className="text-secondary">{label}</p>
     </div>
   );
 };

@@ -18,7 +18,7 @@ import MenuOption from "@/components/UI/SidebarMenuOption";
 export default function Home() {
   return (
     <div className="w-full h-full flex">
-      <aside className="flex flex-col justify-between gap-4 bg-primary p-4 min-h-screen">
+      <aside className="flex flex-col justify-between gap-4 bg-primary py-4 px-2 min-h-screen">
         <div className="flex justify-center items-center">
           <Image src={CLogo} width={60} height={60} alt="Celebria-mini-logo" />
         </div>
@@ -54,7 +54,7 @@ export default function Home() {
           />
         </section>
       </aside>
-      <section className="w-full h-full py-12 px-52 flex flex-col justify-center items-center gap-4">
+      <section className="w-full h-full py-12 px-56 flex flex-col justify-center items-center gap-4">
         <div className="w-full">
           <h1 className="text-5xl text-primary font-bold">Bienvenido, User.</h1>
         </div>
