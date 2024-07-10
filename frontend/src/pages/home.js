@@ -60,6 +60,7 @@ export default function Home() {
         </div>
         <section className="grid grid-cols-3 grid-rows-1 gap-4 my-4">
           <HomeCard
+            className="col-span-2"
             image={NewEventBackground}
             size={2}
             title={"Registra tu evento"}
