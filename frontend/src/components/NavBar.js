@@ -1,16 +1,10 @@
-import NavLink from "./UI/NavLink";
-import Button from "./UI/Button";
 import Image from "next/image";
 import Logo from "../../public/Celebria-logo.webp";
-import { useRouter } from "next/router";
+import NavLink from "./UI/NavLink";
+import Button from "./UI/Button";
+import Link from "next/link";
 
 const NavBar = () => {
-  const router = useRouter();
-
-  const handleLogin = () => {
-    router.push("/home");
-  };
-
   return (
     <nav className="bg-white drop-shadow-sm relative py-4 z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center">
@@ -23,7 +17,10 @@ const NavBar = () => {
             <NavLink text="PROVEEDORES" />
             <NavLink text="TU EVENTO" />
             <NavLink text="INVITACIONES" />
-            <Button text="ACCEDER" redirect={handleLogin} />
+            <Link href="/login" passHref>
+              <Button text="ACCEDER" />
+            </Link>
+
             <Button text="REGISTRARTE" />
           </div>
         </div>
