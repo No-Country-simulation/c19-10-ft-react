@@ -6,7 +6,7 @@ import Image from "next/image";
 import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
-
+import Link from "next/link";
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email("Correo electrónico inválido")
@@ -42,9 +42,11 @@ const LoginPage = () => {
           <p className="text-23 font-bold text-white mr-2">
             ¿No te has registrado?
           </p>
-          <button className="bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 font-bold text-base">
-            Registrarse
-          </button>
+          <Link href="/register" passHref>
+            <button className="bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 font-bold text-base">
+              Registrarse
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -57,10 +59,11 @@ const LoginPage = () => {
           onSubmit={async (values, { setSubmitting }) => {
             try {
               console.log("Valores del formulario:", values);
-              await axios.post(
+              const response = await axios.post(
                 "http://localhost:3001/api/v1/users/login",
                 values
               );
+              localStorage.setItem("token", response.data.token);
               router.push("/home");
             } catch (error) {
               console.error("Error en el login:", error);
