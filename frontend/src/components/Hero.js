@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Button from "./UI/Button";
+import Link from "next/link";
 
 const images = [
   "/images/foto1.webp",
@@ -57,10 +58,12 @@ const Hero = () => {
             recuerdos eternos.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <Button
-              text="REGÍSTRATE"
-              className="w-full sm:w-auto px-8 hover:bg-white hover:text-accent "
-            />
+            <Link href="/register" passHref>
+              <Button
+                text="REGÍSTRATE"
+                className="w-full sm:w-auto px-8 hover:bg-white hover:text-accent "
+              />
+            </Link>
             <Button
               text="DESCUBRE MÁS"
               className="w-full sm:w-auto bg-transparent border border-white text-white hover:bg-transparent"
