@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Guardian from "@/components/auth/guardian";
+import { jwtDecode } from "jwt-decode";
 
 import CLogo from "../../public/C-logo.svg";
 import ProfileLogo from "../../public/profile-logo.svg";
@@ -15,7 +17,27 @@ import LunchEvent from "../../public/lunch-event.webp";
 import HomeCard from "@/components/UI/HomeCard";
 import MenuOption from "@/components/UI/SidebarMenuOption";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+const Home = () => {
+  const router = useRouter();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      const data = jwtDecode(token);
+      setUser(data);
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
   return (
     <div className="w-full h-full flex">
       <aside className="flex flex-col justify-between gap-4 bg-primary py-4 px-2 min-h-screen">
@@ -55,8 +77,16 @@ export default function Home() {
         </section>
       </aside>
       <section className="w-full h-full py-12 px-56 flex flex-col justify-center items-center gap-4">
-        <div className="w-full">
-          <h1 className="text-5xl text-primary font-bold">Bienvenido, User.</h1>
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-5xl text-primary font-bold">
+            Bienvenido, {user?.name}.
+          </h1>
+          <button
+            onClick={() => logout()}
+            className="bg-primary btn btn-md text-secondary hover:bg-accent "
+          >
+            Cerrar sesion
+          </button>
         </div>
         <section className="grid grid-cols-3 grid-rows-1 gap-4 my-4">
           <HomeCard
@@ -86,4 +116,6 @@ export default function Home() {
       </section>
     </div>
   );
-}
+};
+
+export default Guardian(Home);

@@ -20,8 +20,9 @@ const NavBar = () => {
             <Link href="/login" passHref>
               <Button text="ACCEDER" />
             </Link>
-
-            <Button text="REGISTRARTE" />
+            <Link href="/register" passHref>
+              <Button text="REGISTRARTE" />
+            </Link>
           </div>
         </div>
       </div>
