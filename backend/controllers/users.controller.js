@@ -24,22 +24,12 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
+    const token = jwt.sign({ name: user.name, email: user.email }, JWT_SECRET, {
       expiresIn: "30m",
     });
-    res.json({ message: "Login successful", token });
+    res.json({ token });
   } catch (error) {
     res.status(400).json({ message: "Error logging in", error });
-  }
-};
-
-const create = async (req, res) => {
-  try {
-    console.log("Creating user");
-    // const response = await service.create(req.body);
-    // res.json({ success: true, data: response });
-  } catch (error) {
-    res.status(500).send({ success: false, message: error.message });
   }
 };
 
@@ -90,7 +80,6 @@ const _delete = async (req, res) => {
 module.exports = {
   register,
   login,
-  create,
   get,
   getById,
   update,
