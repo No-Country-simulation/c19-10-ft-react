@@ -4,41 +4,25 @@
 // 1 : 1 -> hasOne
 
 const initModels = (sequelize) => {
-    const { User, Event, Invitation, Donation, Message } = sequelize.models;
+  const { User, Event, Invitation, Donation, Message } = sequelize.models;
 
-    User.hasMany(Invitation);
-    Invitation.belongsTo(User, {
-      foreignKey: 'userId',
-    //   as: 'user_id',
-    });
-    Event.hasMany(Invitation);
-    Invitation.belongsTo(Event, {
-      foreignKey: 'eventId',
-    //   as: 'event_id',
-    });  
+  User.hasMany(Invitation, { foreignKey: 'userId', as: 'invitations' });
+  Invitation.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
 
-    User.hasMany(Donation);
-    Donation.belongsTo(User, {
-      foreignKey: 'userId',
-    //   as: 'user_id',
-    });
-    Event.hasMany(Donation);
-    Donation.belongsTo(Event, {
-      foreignKey: 'eventId',
-    //   as: 'user_id',
-    });
+  Event.hasMany(Invitation, { foreignKey: 'eventId', as: 'invitations' });
+  Invitation.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
 
-    User.hasMany(Message);
-    Message.belongsTo(User, {
-    foreignKey: 'userId',
-    // as: 'user_id',
-    });
-    Event.hasMany(Message);
-    Message.belongsTo(Event, {
-    foreignKey: 'eventId',
-    // as: 'user_id',
-    });
-  
-  };
-  
-  module.exports = initModels;
+  User.hasMany(Donation, { foreignKey: 'userId', as: 'donations' });
+  Donation.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
+
+  Event.hasMany(Donation, { foreignKey: 'eventId', as: 'donations' });
+  Donation.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
+
+  User.hasMany(Message, { foreignKey: 'userId', as: 'messages' });
+  Message.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
+
+  Event.hasMany(Message, { foreignKey: 'eventId', as: 'messages' });
+  Message.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
+};
+
+module.exports = initModels;

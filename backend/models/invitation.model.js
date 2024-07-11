@@ -1,6 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
+const User = require('./users.model')
+const Event = require('./event.model')
 
-const INVITATION_TABLE = "Invitation"
+const INVITATION_TABLE = "invitation"
 
 
 class Invitation extends Model {
@@ -9,7 +11,7 @@ class Invitation extends Model {
              sequelize, 
              tableName: INVITATION_TABLE,
              modelName: "Invitation",
-             timestamps: true,
+             timestamps: false,
         };
     }
 }
@@ -47,6 +49,28 @@ const invitationSchema = {
         type: DataTypes.DATE,
         field: "invitation_date"
     },
+    userId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: User,
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        field: "userId",
+      },
+      eventId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: Event,
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        field: "eventId",
+      },
 }
 
 module.exports = {

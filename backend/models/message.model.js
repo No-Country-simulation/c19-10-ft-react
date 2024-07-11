@@ -1,8 +1,8 @@
-
-
 const { Model, DataTypes } = require("sequelize");
+const User = require('./users.model')
+const Event = require('./event.model')
 
-const MESSAGE_TABLE = "Message"
+const MESSAGE_TABLE = "message"
 
 
 class Message extends Model {
@@ -31,6 +31,28 @@ const messageSchema = {
         type: DataTypes.DATE,
         field: "date"
     },
+    userId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: User,
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        field: "userId",
+      },
+      eventId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: Event,
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        field: "eventId",
+      },
 }
 
 module.exports = {
