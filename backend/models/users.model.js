@@ -28,6 +28,8 @@ const userSchema = {
   email: {
     allowNull: false,
     type: DataTypes.STRING,
+    // unique: true, 
+    // validate: {isEmail: true},
     field: "email",
   },
   password: {
