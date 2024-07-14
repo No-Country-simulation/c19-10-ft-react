@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Guardian from "@/components/auth/guardian";
 import { jwtDecode } from "jwt-decode";
@@ -17,8 +19,10 @@ import LunchEvent from "../../public/lunch-event.webp";
 import HomeCard from "@/components/UI/HomeCard";
 import MenuOption from "@/components/UI/SidebarMenuOption";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+// Cargar DatePicker dinámicamente para que se cargue solo en el cliente
+const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const Home = () => {
   const router = useRouter();
@@ -38,6 +42,7 @@ const Home = () => {
     localStorage.removeItem("token");
     router.push("/");
   };
+
   return (
     <div className="w-full h-full flex">
       <aside className="flex flex-col justify-between gap-4 bg-primary py-4 px-2 min-h-screen">
@@ -94,6 +99,7 @@ const Home = () => {
             image={NewEventBackground}
             size={2}
             title={"Registra tu evento"}
+            onClick={openModal} // Asegúrate de pasar la función onClick aquí
           />
           <HomeCard
             image={YourEventsBackground}
@@ -114,6 +120,69 @@ const Home = () => {
           </div>
         </section>
       </section>
+
+      <div className={`modal ${isModalOpen ? "modal-open" : ""}`}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Registra tu evento</h3>
+          <form className="flex flex-col gap-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Tipo de Evento</span>
+              </label>
+              <select
+                className="select select-bordered focus:border-primary"
+                value={eventType}
+                onChange={(e) => setEventType(e.target.value)}
+              >
+                <option value="">Seleccione un tipo de evento</option>
+                <option value="casamiento">Casamiento</option>
+                <option value="cumpleaños infantil">Cumpleaños Infantil</option>
+                <option value="cumpleaños de 15">Cumpleaños de 15</option>
+                <option value="cumpleaños adulto">Cumpleaños Adulto</option>
+                <option value="baby shower">Baby Shower</option>
+                <option value="despedida de soltero/a">Despedida de Soltero/a</option>
+                <option value="evento empresarial">Evento Empresarial</option>
+              </select>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Nombre del Evento</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered focus:border-primary"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Descripción</span>
+              </label>
+              <textarea
+                className="textarea textarea-bordered focus:border-primary"
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+              ></textarea>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Fecha</span>
+              </label>
+              <DatePicker
+                selected={eventDate}
+                onChange={(date) => setEventDate(date)}
+                className="input input-bordered focus:border-primary"
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
+            <div className="modal-action">
+              <button type="button" className="btn btn-secondary" onClick={closeModal}>Cerrar</button>
+              <button type="submit" className="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
