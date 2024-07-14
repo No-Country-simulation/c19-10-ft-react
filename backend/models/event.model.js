@@ -19,6 +19,7 @@ const eventSchema = {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
+        // type: DataTypes.UUID
     },
     title: {
         allowNull: false,

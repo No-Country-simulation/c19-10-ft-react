@@ -19,6 +19,7 @@ const userSchema = {
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER,
+    // type:DataTypes.UUID
   },
   name: {
     allowNull: false,
@@ -28,6 +29,8 @@ const userSchema = {
   email: {
     allowNull: false,
     type: DataTypes.STRING,
+    // unique: true, 
+    // validate: {isEmail: true},
     field: "email",
   },
   password: {
