@@ -27,6 +27,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ name: user.name, email: user.email }, JWT_SECRET, {
       expiresIn: "30m",
     });
+    console.log(user.name, user.email)
+    console.log(token)
     res.json({ token });
   } catch (error) {
     res.status(400).json({ message: "Error logging in", error });
