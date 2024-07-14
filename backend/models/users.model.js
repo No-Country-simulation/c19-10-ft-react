@@ -35,6 +35,11 @@ const userSchema = {
     type: DataTypes.STRING,
     field: "password",
   },
+  userType: {
+    allowNull: false,
+    // defaultValue: user,
+    type: DataTypes.STRING,
+  }
 };
 
 module.exports = {

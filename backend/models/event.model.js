@@ -35,6 +35,16 @@ const eventSchema = {
         type: DataTypes.DATE,
         field: "date"
     },
+     // img: {
+    //     allowNull: true, 
+    //     type: DataTypes.STRING,
+    //     field: "img"
+    // }
+    // location: {
+    //     allowNull: false,
+    //     type: DataTypes.STRING,
+    //     field: "location"
+    // },
 }
 
 module.exports = {
