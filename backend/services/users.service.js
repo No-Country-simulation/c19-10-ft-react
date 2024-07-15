@@ -1,5 +1,6 @@
 const { models } = require("../libs/sequelize");
 const bcrypt = require("bcryptjs");
+const { Op } = require('sequelize')
 
 class UsersService {
   constructor() { }
@@ -9,7 +10,7 @@ class UsersService {
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
-    
+
     try {
       if (!validateUser) {
         const user = await models.User.create({
@@ -25,46 +26,47 @@ class UsersService {
   }
 
   async findByEmail(email) {
-      return await models.User.findOne({ where: { email } });
-    }
+    return await models.User.findOne({ where: { email } });
+  }
 
-  async findAll() {
-      try {
-        return await models.User.findAll()
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-  async findOne(id) {
-      try {
-        console.log("User finded");
-        //   return await models.User.findByPk(id);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-  async update(id, data) {
-      try {
-        console.log("User updated");
-        //   const model = await this.findOne(id);
-        //   return await model.update(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-  async delete (id) {
-      try {
-        console.log("User deleted");
-        //   const model = await this.findOne(id);
-        //   await model.destroy();
-        //   return { deleted: true };
-      } catch (error) {
-        console.error(error);
-      }
+  async findUsers() {
+    try {
+      return await models.User.findAll()
+    } catch (error) {
+      console.error(error);
     }
   }
+
+  async findById(id) {
+    try {
+      return await models.User.findByPk(id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async findByName(name) {
+    try {
+      return await models.User.findAll({
+        where: {
+          name:
+            { [Op.iLike]: `%${name}%` }
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async deleteUSer(id) {
+    try {
+        const model = await this.findById(id);
+        await model.destroy();
+        return { deleted: true };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
 
 module.exports = UsersService;
