@@ -40,8 +40,8 @@ const userSchema = {
   },
   userType: {
     allowNull: false,
-    // defaultValue: user,
-    type: DataTypes.STRING,
+    defaultValue: "user",
+    type: DataTypes.ENUM("user", "admin", "superAdmin"),
   }
 };
 
