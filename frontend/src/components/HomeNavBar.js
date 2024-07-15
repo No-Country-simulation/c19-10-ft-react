@@ -57,7 +57,7 @@ const HomeNavBar = () => {
         <div className={`div2 ${menuOpen ? 'block' : 'hidden'}`}>
         <div className="divider divider-neutral opacity-50"></div>
 
-        <section id="nav-options" className="flex gap-8"> {/* min-h-[660px] */}
+        <section id="nav-options" className="flex gap-8">
           <MenuOption
             logo={ProfileLogo}
             alt={"profile-logo"}

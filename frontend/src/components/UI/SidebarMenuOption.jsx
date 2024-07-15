@@ -1,5 +1,4 @@
 import Image from "next/image";
-// modifique el width y height, era 40
 
 const MenuOption = ({ logo, alt, label, action }) => {
   return (

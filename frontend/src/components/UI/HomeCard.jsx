@@ -1,5 +1,4 @@
 import Image from "next/image";
-
 const HomeCard = ({ image, size, title }) => {
   return (
     <div
