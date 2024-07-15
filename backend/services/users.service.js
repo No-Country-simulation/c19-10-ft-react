@@ -58,11 +58,21 @@ class UsersService {
     }
   }
 
-  async deleteUSer(id) {
+  async updateUser(id, data) {
     try {
-        const model = await this.findById(id);
-        await model.destroy();
-        return { deleted: true };
+      const updatedUser = await this.findById(id)
+      return await updatedUser.update(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  async deleteUser(id) {
+    try {
+      const model = await this.findById(id);
+      await model.destroy();
+      return { deleted: true };
     } catch (error) {
       console.error(error);
     }

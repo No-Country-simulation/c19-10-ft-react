@@ -55,7 +55,6 @@ const getById = async (req, res) => {
 const getByName = async (req, res) => {
   try {
     const { name } = req.params
-    console.log(name)
     const userByName = await usersService.findByName(name)
     res.status(200).json({ message: `User with name: ${name}, finded`, userByName })
   } catch (error) {
@@ -67,7 +66,7 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
-    const updatedUser = await usersService.findByName(id, body);
+    const updatedUser = await usersService.updateUser(id, body);
     res.status(200).json({ message: `User with id: ${id}, updated`, updatedUser })
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
