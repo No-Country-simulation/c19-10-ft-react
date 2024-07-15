@@ -29,11 +29,10 @@ class EventService {
             console.log(error)
         }
     }
-    async update(id, data) {
+    async updateEvent(id, data) {
         try {
-            console.log("Event updated");
-            //   const model = await this.findOne(id);
-            //   return await model.update(data);
+            const model = await this.findById(id);
+            return await model.update(data);
         } catch (error) {
             console.error(error);
         }
@@ -48,7 +47,7 @@ class EventService {
             console.error(error);
         }
     }
-} 
+}
 
 
 module.exports = EventService
