@@ -1,24 +1,14 @@
-import Image from "next/image";
 import Guardian from "@/components/auth/guardian";
 import { jwtDecode } from "jwt-decode";
-
-import CLogo from "../../public/C-logo.svg";
-import ProfileLogo from "../../public/profile-logo.svg";
-import NotificationsLogo from "../../public/notifications-logo.svg";
-import CalendarLogo from "../../public/calendar-logo.svg";
-import InvitationLogo from "../../public/invitation-logo.svg";
-import SettingsLogo from "../../public/settings-logo.svg";
 import NewEventBackground from "../../public/new-event.webp";
 import YourEventsBackground from "../../public/your-events.webp";
 import NigthEvent from "../../public/nigth-event.webp";
 import SunsetEvent from "../../public/sunset-event.webp";
 import LunchEvent from "../../public/lunch-event.webp";
-
 import HomeCard from "@/components/UI/HomeCard";
-import MenuOption from "@/components/UI/SidebarMenuOption";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import HomeNavBar from "@/components/HomeNavBar";
 
 const Home = () => {
   const router = useRouter();
@@ -39,51 +29,16 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <div className="w-full h-full flex">
-      <aside className="flex flex-col justify-between gap-4 bg-primary py-4 px-2 min-h-screen">
-        <div className="flex justify-center items-center">
-          <Image src={CLogo} width={60} height={60} alt="Celebria-mini-logo" />
-        </div>
-        <div className="divider divider-neutral opacity-50"></div>
-
-        <section className="min-h-[660px] flex flex-col gap-8">
-          <MenuOption
-            logo={ProfileLogo}
-            alt={"profile-logo"}
-            label={"Perfil"}
-          />
-          <MenuOption
-            logo={NotificationsLogo}
-            alt={"notifications-logo"}
-            label={"Avisos"}
-          />
-          <MenuOption
-            logo={CalendarLogo}
-            alt={"calendar-logo"}
-            label={"Calendario"}
-          />
-          <MenuOption
-            logo={InvitationLogo}
-            alt={"invitation-logo"}
-            label={"Invitaciones"}
-          />
-        </section>
-        <section className="h-full w-full">
-          <MenuOption
-            logo={SettingsLogo}
-            alt={"settings-logo"}
-            label={"Configuración"}
-          />
-        </section>
-      </aside>
-      <section className="w-full h-full py-12 px-56 flex flex-col justify-center items-center gap-4">
+    <div className="home-main-div">
+      <HomeNavBar/>
+      <section className="w-full h-full py-12 flex flex-col justify-center items-center gap-4 custom-px-56">
         <div className="w-full flex justify-between items-center">
-          <h1 className="text-5xl text-primary font-bold">
+          <h1 className="custom-text-5xl text-primary font-bold">
             Bienvenido, {user?.name}.
           </h1>
           <button
             onClick={() => logout()}
-            className="bg-primary btn btn-md text-secondary hover:bg-accent "
+            className="bg-primary btn btn-md text-secondary hover:bg-accent btn-logout"
           >
             Cerrar sesion
           </button>
@@ -103,7 +58,7 @@ const Home = () => {
         </section>
         <section className="w-full h-full flex flex-col justify-center items-center">
           <div className="w-full">
-            <h2 className="text-3xl text-primary font-semibold">
+            <h2 className="text-primary font-semibold custom-text-3xl">
               Eventos disponibles
             </h2>
           </div>

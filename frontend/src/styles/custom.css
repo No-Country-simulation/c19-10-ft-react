@@ -1,0 +1,118 @@
+:root {
+    --nav-margin: 6rem
+}
+.home-main-div{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+}
+.custom-px-56{
+    margin-top: var(--nav-margin);
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#nav-options{
+    flex-direction: column;
+    height: auto;
+}
+#div1 {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+}
+.div2 {
+    display: none;
+}
+#nav-aside {
+    position: static;
+    width: 100%;
+    min-height: auto;
+    height: auto;
+}
+.btn-logout {
+    margin-left: 1rem;
+    width: 6rem;
+}
+
+.div2.block {
+    display: block;
+}
+  
+  .div2.hidden {
+    display: none;
+}
+.justify-rspnsv{
+    justify-content: space-between;
+}
+.custom-text-5xl {
+    font-size: auto;
+}
+.custom-text-3xl{
+    font-size: auto;
+}
+#brgr-menu{
+    display: none;
+}
+
+@media (min-width: 768px){
+    .home-main-div{
+        display: flex;
+        flex-direction: row;
+        height: 100vh;
+        width: 100vw;
+    }
+    .custom-px-56{
+        margin-top: 0rem;
+        margin-left: var(--nav-margin);
+        padding-left: 7rem;
+        padding-right: 7rem; 
+    }
+    #div1 {
+        max-width: var(--nav-margin);
+    }
+    .div2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100vh;
+    }
+    .resize-text{
+        font-size: smaller;
+        font-weight: 500;
+    }
+    .sec1{
+        display: contents;
+    }
+    #nav-aside {
+        height: 100vh;
+    }
+    .brgr-menu{
+        display: none;
+    }
+    .justify-rspnsv{
+        justify-content: center;
+    }
+    .custom-text-5xl {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+    .custom-text-3xl{
+        font-size: 1,875rem;
+        line-height: 2.25rem;
+    }
+}
+@media (min-width: 1024px){
+    .custom-px-56{
+        margin-top: 0rem;
+        margin-left: var(--nav-margin);
+        padding-left: 14rem;
+        padding-right: 14rem; 
+    }
+    .custom-text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+    }
+
+}
