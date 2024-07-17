@@ -31,11 +31,10 @@ const getById = async (req, res) => {
 }
 const update = async (req, res) => {
     try {
-        console.log("Updating user data");
-        // const { id } = req.params;
-        // const body = req.body;
-        // const updatedEvent = await service.update(id, body);
-        // res.status(200).json({ message: `Event with id: ${id} updated`, updatedEvent })
+        const { id } = req.params;
+        const body = req.body;
+        const updatedEvent = await eventService.updateEvent(id, body);
+        res.status(200).json({ message: `Event with id: ${id} updated`, updatedEvent })
     } catch (error) {
         res.status(500).send({ success: false, message: error.message });
     }

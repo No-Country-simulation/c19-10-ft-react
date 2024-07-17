@@ -35,9 +35,8 @@ const login = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    console.log("Looking for users");
-    // const response = await service.findAll();
-    // res.json(response);
+    const AllUsers = await usersService.findUsers();
+    res.status(200).json({ message: "These are all the users", AllUsers })
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -45,10 +44,19 @@ const get = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    console.log("Searching specific user");
-    // const { id } = req.params;
-    // const response = await service.findOne(id);
-    // res.json(response);
+    const { id } = req.params
+    const userById = await usersService.findById(id)
+    res.status(200).json({ message: `User with id: ${id}, finded`, userById })
+  } catch (error) {
+    res.status(500).send({ success: false, message: error.message });
+  }
+};
+
+const getByName = async (req, res) => {
+  try {
+    const { name } = req.params
+    const userByName = await usersService.findByName(name)
+    res.status(200).json({ message: `User with name: ${name}, finded`, userByName })
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -56,11 +64,10 @@ const getById = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    console.log("Updating user data");
-    // const { id } = req.params;
-    // const body = req.body;
-    // const response = await service.update(id, body);
-    // res.json(response);
+    const { id } = req.params;
+    const body = req.body;
+    const updatedUser = await usersService.updateUser(id, body);
+    res.status(200).json({ message: `User with id: ${id}, updated`, updatedUser })
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -68,10 +75,9 @@ const update = async (req, res) => {
 
 const _delete = async (req, res) => {
   try {
-    console.log("Deleting user");
-    // const { id } = req.params;
-    // const response = await service.delete(id);
-    // res.json(response);
+    const { id } = req.params;
+    const response = await usersService.deleteUSer(id);
+    res.json(response);
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -82,6 +88,7 @@ module.exports = {
   login,
   get,
   getById,
+  getByName,
   update,
   _delete,
 };

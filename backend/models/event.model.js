@@ -19,6 +19,7 @@ const eventSchema = {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
+        // type: DataTypes.UUID
     },
     title: {
         allowNull: false,
@@ -35,6 +36,16 @@ const eventSchema = {
         type: DataTypes.DATE,
         field: "date"
     },
+     // img: {
+    //     allowNull: true, 
+    //     type: DataTypes.STRING,
+    //     field: "img"
+    // }
+    // location: {
+    //     allowNull: false,
+    //     type: DataTypes.STRING,
+    //     field: "location"
+    // },
 }
 
 module.exports = {
