@@ -9,6 +9,7 @@ import SunsetEvent from "../../../public/sunset-event.webp";
 import LunchEvent from "../../../public/lunch-event.webp";
 
 import HomeCard from "@/components/UI/HomeCard";
+import RegisterEventModal from "@/components/RegisterEventModal";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,6 +17,11 @@ import { useRouter } from "next/router";
 const Home = () => {
   const router = useRouter();
   const [user, setUser] = useState();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -52,6 +58,7 @@ const Home = () => {
               image={NewEventBackground}
               size={2}
               title={"Registra tu evento"}
+              onClick={() => openModal()}
             />
             <HomeCard
               image={YourEventsBackground}
@@ -77,6 +84,8 @@ const Home = () => {
             </div>
           </section>
         </section>
+
+        <RegisterEventModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
     </Layout>
   );
