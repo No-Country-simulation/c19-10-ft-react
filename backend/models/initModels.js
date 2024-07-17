@@ -9,6 +9,9 @@ const initModels = (sequelize) => {
   User.hasMany(Invitation, { foreignKey: 'userId', as: 'invitations' });
   Invitation.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
 
+  User.hasMany(Event, { foreignKey: 'userId', as: 'events' });
+  Event.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
+
   Event.hasMany(Invitation, { foreignKey: 'eventId', as: 'invitations' });
   Invitation.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
 
@@ -35,9 +38,9 @@ const initModels = (sequelize) => {
 
   Event.hasMany(PostImages, { foreignKey: 'eventId', as: 'post_images' });
   PostImages.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
-  
+
   Post.hasMany(PostImages, { foreignKey: 'postId', as: 'post_images' });
   PostImages.belongsTo(Post, { foreignKey: 'postId', as: 'post', targetKey: 'id' });
-};
+}
 
 module.exports = initModels;
