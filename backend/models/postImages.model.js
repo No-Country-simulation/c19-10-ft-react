@@ -1,44 +1,31 @@
 const { Model, DataTypes } = require("sequelize");
 const User = require('./users.model');
 const Event = require('./event.model');
+const Post = require("./post.model");
 
-const DONATION_TABLE = "donation"
+const POSTIMAGES_TABLE = "post_images"
 
-
-class Donation extends Model {
+class PostImages extends Model {
     static config(sequelize) {
         return {
-            sequelize, 
-            tableName: DONATION_TABLE,
-            modelName: "Donation",
-            timestamps: true,
+             sequelize, 
+             tableName: POSTIMAGES_TABLE,
+             modelName: "PostImages",
+             timestamps: true,
         };
     }
 }
 
-const donationSchema = {
+const postImagesSchema = {
     id: {
         allowNull: false, 
         primaryKey: true,
         type: DataTypes.UUID
     },
-    title: {
+    url: {
+        allowNull: false,
         type: DataTypes.STRING,
-        field: "title"
-    },
-    amount: {
-        type: DataTypes.DECIMAL,
-        allowNull: false,
-        field: "amount"
-    },
-    description:{
-        type: DataTypes.TEXT,
-        field: "decription",
-    },
-    date: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        field: "date"
+        field: "url"
     },
     userId: {
         allowNull: true,
@@ -62,9 +49,20 @@ const donationSchema = {
         onUpdate: "CASCADE",
         field: "eventId",
       },
+      postId: {
+        allowNull: true,
+        type: DataTypes.UUID,
+        references: {
+          model: Post,
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        field: "postId",
+      },
 }
 
 module.exports = {
-    Donation, 
-    donationSchema,
+    PostImages, 
+    postImagesSchema,
 }
