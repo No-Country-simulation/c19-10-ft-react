@@ -5,11 +5,13 @@ class EventService {
 
     async create(eventData) {
 
-        const { title, description, date } = eventData;
+        const { title, description, date, type, userId } = eventData;
         const event = await models.Event.create({
             title,
             description,
-            date
+            date,
+            type,
+            userId
         });
         return event
     }
@@ -29,11 +31,23 @@ class EventService {
             console.log(error)
         }
     }
-    async update(id, data) {
+
+    async findEventByUserId(id) {
         try {
-            console.log("Event updated");
-            //   const model = await this.findOne(id);
-            //   return await model.update(data);
+            return await models.Event.findAll({
+                where: {
+                userId: id
+                }
+              })
+        }catch(error) {
+            console.log(error)
+        }
+    }
+
+    async updateEvent(id, data) {
+        try {
+            const model = await this.findById(id);
+            return await model.update(data);
         } catch (error) {
             console.error(error);
         }
@@ -48,7 +62,7 @@ class EventService {
             console.error(error);
         }
     }
-} 
+}
 
 
 module.exports = EventService
