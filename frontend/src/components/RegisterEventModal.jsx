@@ -38,10 +38,12 @@ const RegisterEventModal = ({ isOpen, onClose }) => {
               console.error("Error al crear evento:", error);
             } finally {
               setSubmitting(false);
+              handleReset();
+              onClose();
             }
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, handleReset }) => (
             <Form>
               <div className="mb-4">
                 {/* <label className="block text-sm font-medium text-gray-700">
