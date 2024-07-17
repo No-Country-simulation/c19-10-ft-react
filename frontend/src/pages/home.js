@@ -18,15 +18,16 @@ import LunchEvent from "../../public/lunch-event.webp";
 
 import HomeCard from "@/components/UI/HomeCard";
 import MenuOption from "@/components/UI/SidebarMenuOption";
-
-// Cargar DatePicker dinámicamente para que se cargue solo en el cliente
-const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
-
-import "react-datepicker/dist/react-datepicker.css";
+import RegisterEventModal from "@/components/RegisterEventModal";
 
 const Home = () => {
   const router = useRouter();
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,15 +37,12 @@ const Home = () => {
       const data = jwtDecode(token);
       setUser(data);
     }
-  }, []);
+  }, [router]);
 
   const logout = () => {
     localStorage.removeItem("token");
     router.push("/");
   };
-
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
 
   return (
     <div className="w-full h-full flex">
@@ -55,13 +53,33 @@ const Home = () => {
         <div className="divider divider-neutral opacity-50"></div>
 
         <section className="min-h-[660px] flex flex-col gap-8">
-          <MenuOption logo={ProfileLogo} alt={"profile-logo"} label={"Perfil"} />
-          <MenuOption logo={NotificationsLogo} alt={"notifications-logo"} label={"Avisos"} />
-          <MenuOption logo={CalendarLogo} alt={"calendar-logo"} label={"Calendario"} />
-          <MenuOption logo={InvitationLogo} alt={"invitation-logo"} label={"Invitaciones"} />
+          <MenuOption
+            logo={ProfileLogo}
+            alt={"profile-logo"}
+            label={"Perfil"}
+          />
+          <MenuOption
+            logo={NotificationsLogo}
+            alt={"notifications-logo"}
+            label={"Avisos"}
+          />
+          <MenuOption
+            logo={CalendarLogo}
+            alt={"calendar-logo"}
+            label={"Calendario"}
+          />
+          <MenuOption
+            logo={InvitationLogo}
+            alt={"invitation-logo"}
+            label={"Invitaciones"}
+          />
         </section>
         <section className="h-full w-full">
-          <MenuOption logo={SettingsLogo} alt={"settings-logo"} label={"Configuración"} />
+          <MenuOption
+            logo={SettingsLogo}
+            alt={"settings-logo"}
+            label={"Configuración"}
+          />
         </section>
       </aside>
       <section className="w-full h-full py-12 px-56 flex flex-col justify-center items-center gap-4">
@@ -71,9 +89,9 @@ const Home = () => {
           </h1>
           <button
             onClick={() => logout()}
-            className="bg-primary btn btn-md text-secondary hover:bg-accent "
+            className="bg-primary btn btn-md text-secondary hover:bg-accent"
           >
-            Cerrar sesion
+            Cerrar sesión
           </button>
         </div>
         <section className="grid grid-cols-3 grid-rows-1 gap-4 my-4">
@@ -82,9 +100,13 @@ const Home = () => {
             image={NewEventBackground}
             size={2}
             title={"Registra tu evento"}
-            onClick={openModal} // Asegúrate de pasar la función onClick aquí
+            onClick={() => openModal()}
           />
-          <HomeCard image={YourEventsBackground} size={1} title={"Tus eventos"} />
+          <HomeCard
+            image={YourEventsBackground}
+            size={1}
+            title={"Tus eventos"}
+          />
         </section>
         <section className="w-full h-full flex flex-col justify-center items-center">
           <div className="w-full">
@@ -99,82 +121,7 @@ const Home = () => {
           </div>
         </section>
       </section>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 w-1/2">
-            <h2 className="text-2xl mb-4">Registra tu evento</h2>
-            <form>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Tipo de evento
-                </label>
-                <select
-                  className="mt-1 block w-full h-12 border border-primary rounded-md shadow-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-                  value={eventType}
-                  onChange={(e) => setEventType(e.target.value)}
-                >
-                  <option>Seleccione un tipo de evento</option>
-                  <option>Casamiento</option>
-                  <option>Cumpleaños Infantil</option>
-                  <option>Cumpleaños de 15</option>
-                  <option>Cumpleaños Adulto</option>
-                  <option>Baby Shower</option>
-                  <option>Despedida de soltero/a</option>
-                  <option>Evento empresarial</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Nombre del evento
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full h-12 border border-primary rounded-md shadow-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-                  value={eventName}
-                  onChange={(e) => setEventName(e.target.value)}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Descripción
-                </label>
-                <textarea
-                  className="mt-1 block w-full h-24 border border-primary rounded-md shadow-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-                  value={eventDescription}
-                  onChange={(e) => setEventDescription(e.target.value)}
-                />
-              </div>
-              <div className="mb-4 flex flex-col items-center">
-                <label className="block text-sm font-medium text-gray-700">
-                  Fecha
-                </label>
-                <DatePicker
-                  className="mt-1 block w-full h-12 border border-primary rounded-md shadow-sm text-center focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-                  selected={eventDate}
-                  onChange={(date) => setEventDate(date)}
-                />
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="bg-primary text-white px-4 py-2 ml-4 rounded-md"
-                >
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <RegisterEventModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };
