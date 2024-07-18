@@ -6,6 +6,9 @@ module.exports = {
         mytheme: {
           primary: "#F33863",
           secondary: "#EAEAEA",
+          background: "#FFF2F2",
+          black: "#000000",
+          white: "#F7F7F7",
           accent: "#7D153A",
           neutral: "#CECECE",
         },
@@ -25,7 +28,7 @@ module.exports = {
         background: "#FFF2F2",
         accent: "#7D153A",
         black: "#000000",
-        white: "#FFFFFF",
+        white: "#F7F7F7",
       },
     },
   },
