@@ -1,6 +1,5 @@
 import Guardian from "@/components/auth/guardian";
 import { jwtDecode } from "jwt-decode";
-import Layout from "@/Layouts/Layout";
 
 import NewEventBackground from "../../../public/new-event.webp";
 import YourEventsBackground from "../../../public/your-events.webp";
