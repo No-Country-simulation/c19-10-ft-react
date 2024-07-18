@@ -9,7 +9,7 @@ const MenuOption = ({ logo, alt, label, action }) => {
       >
         <Image src={logo} width={30} height={30} alt={alt} />
       </button>
-      <p className="text-secondary text-sm">{label}</p>
+      <p className="text-secondary text-xs md:text-sm">{label}</p>
     </div>
   );
 };

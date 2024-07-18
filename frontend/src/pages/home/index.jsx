@@ -10,6 +10,7 @@ import LunchEvent from "../../../public/lunch-event.webp";
 
 import HomeCard from "@/components/UI/HomeCard";
 import RegisterEventModal from "@/components/RegisterEventModal";
+import Sidebar from "@/components/UI/Sidebar";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -38,16 +39,17 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <Layout>
-      <div>
-        <section className="w-full h-full py-12 px-56 flex flex-col justify-center items-center gap-4">
+    <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
+      <Sidebar />
+      <div className="w-full">
+        <section className="w-full h-screen md:h-full py-4 px-12 md:py-12 md:px-56 flex flex-col justify-center items-center gap-4">
           <div className="w-full flex justify-between items-center">
-            <h1 className="text-5xl text-primary font-bold">
+            <h1 className="text-3xl md:text-5xl text-primary font-bold">
               Bienvenido, {user?.name}.
             </h1>
             <button
               onClick={() => logout()}
-              className="bg-primary btn btn-md text-secondary hover:bg-accent "
+              className="bg-red-600 btn btn-xs md:btn-md text-secondary hover:bg-red-300 "
             >
               Cerrar sesion
             </button>
@@ -73,7 +75,7 @@ const Home = () => {
                 Eventos disponibles
               </h2>
             </div>
-            <div className="grid grid-cols-3 grid-rows-1 gap-4 my-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 my-4">
               <HomeCard image={LunchEvent} size={1} title={"Almuerzo"} />
               <HomeCard image={SunsetEvent} size={1} title={"Dj Party"} />
               <HomeCard
@@ -87,7 +89,7 @@ const Home = () => {
 
         <RegisterEventModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
-    </Layout>
+    </div>
   );
 };
 
