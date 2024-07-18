@@ -4,14 +4,13 @@ class EventService {
     constructor() { }
 
     async create(eventData) {
-
         const { title, description, date } = eventData;
-        const event = await models.Event.create({
-            title,
-            description,
-            date
-        });
-        return event
+            const event = await models.Event.create({
+                title,
+                description,
+                date
+            });
+            return event           
     }
 
     async findAll() {

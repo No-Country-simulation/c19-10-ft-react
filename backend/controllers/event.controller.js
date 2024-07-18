@@ -4,8 +4,18 @@ const eventService = new EventService()
 
 const create = async (req, res) => {
     try {
-        const newEvent = await eventService.create(req.body)
-        res.status(201).json({ message: "Event created successfully", newEvent })
+        const { title, description, date } = req.body;        
+        if(title && description && date) {
+            const data = { title, description, date };
+            const newEvent = await eventService.create(data)
+            res.status(201).json({ message: "Event created successfully", newEvent })
+        } else {
+            res.status(400).json({ message: "Is mandatory to bring data as...", data: {
+                title: "String",
+                description: "String",
+                date: "2024-07-17 00:18:02.002 -0300"
+            } });
+        }
     } catch (error) {
         res.status(400).json({ message: "Error creating event", error });
     }
@@ -24,7 +34,7 @@ const getById = async (req, res) => {
     try {
         const { id } = req.params
         const eventById = await eventService.findById(id)
-        res.status(200).json({ message: `Event with id: ${id} finded`, eventById })
+        res.status(200).json({ message: `Event with id: ${id} found`, eventById })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }
