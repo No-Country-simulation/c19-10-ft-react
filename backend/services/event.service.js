@@ -4,13 +4,16 @@ class EventService {
     constructor() { }
 
     async create(eventData) {
-        const { title, description, date } = eventData;
-            const event = await models.Event.create({
-                title,
-                description,
-                date
-            });
-            return event           
+
+        const { title, description, date, type, userId } = eventData;
+        const event = await models.Event.create({
+            title,
+            description,
+            date,
+            type,
+            userId
+        });
+        return event
     }
 
     async findAll() {
@@ -28,6 +31,19 @@ class EventService {
             console.log(error)
         }
     }
+
+    async findEventByUserId(id) {
+        try {
+            return await models.Event.findAll({
+                where: {
+                userId: id
+                }
+              })
+        }catch(error) {
+            console.log(error)
+        }
+    }
+
     async updateEvent(id, data) {
         try {
             const model = await this.findById(id);

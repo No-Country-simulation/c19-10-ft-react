@@ -39,6 +39,17 @@ const getById = async (req, res) => {
         res.status(500).json({ success: false, message: error.message })
     }
 }
+
+const getEventByUserId = async(req, res) => {
+    try {
+        const { id } = req.params 
+        const eventByUserId = await eventService.findEventByUserId(id) 
+        res.status(200).json({ message: `Event with user id: ${id} finded`, eventByUserId })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+    }
+}
+
 const update = async (req, res) => {
     try {
         const { id } = req.params;
@@ -65,6 +76,7 @@ module.exports = {
     create,
     get,
     getById,
+    getEventByUserId,
     update,
     _delete
 }

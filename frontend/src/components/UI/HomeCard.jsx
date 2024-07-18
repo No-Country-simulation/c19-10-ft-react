@@ -1,11 +1,24 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 
-const HomeCard = ({ image, size, title }) => {
+// const HomeCard = ({ image, size, title, path }) => {
+//   const router = useRouter();
+
+//   const navigateTo = (path) => {
+//     router.push(path);
+//   };
+
+const HomeCard = ({ image, size, title, path, onClick }) => {
+  const router = useRouter();
+
+  const navigateTo = (path) => {
+    path ? router.push(path) : null;
+  };
   return (
     <div
-      className={`w-full h-full flex justify-center items-center overflow-hidden row-span-${size} col-span-${size} rounded-2xl cursor-pointer hover:scale-95 transition-all duration-300`}
+      className={`relative cursor-pointer overflow-hidden shadow-lg rounded-lg col-span-${size}`}
+      onClick={path ? () => navigateTo(path) : onClick}
     >
-      <p className="absolute text-3xl text-secondary font-semibold">{title}</p>
       <Image
         className="w-full h-full object-cover"
         src={image}
@@ -13,6 +26,11 @@ const HomeCard = ({ image, size, title }) => {
         height="auto"
         alt="card-img"
       />
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <h3 className="text-white text-lg text-center md:text-2xl font-bold">
+          {title}
+        </h3>
+      </div>
     </div>
   );
 };

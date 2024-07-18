@@ -2,43 +2,34 @@ const { Model, DataTypes } = require("sequelize");
 const User = require('./users.model');
 const Event = require('./event.model');
 
-const DONATION_TABLE = "donation"
+const POST_TABLE = "post"
 
-
-class Donation extends Model {
+class Post extends Model {
     static config(sequelize) {
         return {
-            sequelize, 
-            tableName: DONATION_TABLE,
-            modelName: "Donation",
-            timestamps: true,
+             sequelize, 
+             tableName: POST_TABLE,
+             modelName: "Post",
+             timestamps: true,
         };
     }
 }
 
-const donationSchema = {
+const postSchema = {
     id: {
-        allowNull: false, 
+        allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID
     },
     title: {
+        allowNull: false,
         type: DataTypes.STRING,
         field: "title"
     },
-    amount: {
-        type: DataTypes.DECIMAL,
+    content: {
         allowNull: false,
-        field: "amount"
-    },
-    description:{
         type: DataTypes.TEXT,
-        field: "decription",
-    },
-    date: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        field: "date"
+        field: "content"
     },
     userId: {
         allowNull: true,
@@ -65,6 +56,6 @@ const donationSchema = {
 }
 
 module.exports = {
-    Donation, 
-    donationSchema,
+    Post, 
+    postSchema,
 }
