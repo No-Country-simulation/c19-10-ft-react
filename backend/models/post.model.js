@@ -22,17 +22,17 @@ const postSchema = {
         type: DataTypes.UUID
     },
     title: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING,
         field: "title"
     },
     content: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.TEXT,
         field: "content"
     },
     userId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: User,
@@ -43,7 +43,7 @@ const postSchema = {
         field: "userId",
       },
       eventId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: Event,

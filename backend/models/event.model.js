@@ -45,11 +45,12 @@ const eventSchema = {
       "Cumpleaños Infantil",
       "Cumpleaños de 15",
       "Cumpleaños de Adulto",
+      "Evento Celebria",
       "Baby Shower",
       "Despedida de Soltero/a",
       "Evento Empresarial"
     ),
-    toDefaultValue: "Cumpleaños de Adulto",
+    toDefaultValue: "Evento Celebria",
     field: "type",
   },
   userId: {
@@ -63,16 +64,6 @@ const eventSchema = {
     onUpdate: "CASCADE",
     field: "userId",
   },
-  // img: {
-  //     allowNull: true,
-  //     type: DataTypes.STRING,
-  //     field: "img"
-  // }
-  // location: {
-  //     allowNull: false,
-  //     type: DataTypes.STRING,
-  //     field: "location"
-  // },
 };
 
 module.exports = {

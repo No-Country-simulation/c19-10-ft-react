@@ -6,34 +6,15 @@ class PostImagesService {
 
     async create(postImagesData) {
 
-        const { url, postId, userId, eventId } = postImagesData;
+        const { postId, imgId } = postImagesData;
         const postImages = await models.PostImages.create({
             id: uuid.v4(),
-            url,
             postId,
-            userId,
-            eventId
+            imgId,
         });
         return postImages
     }
 
-    async findAll() {
-        try {
-            return await models.PostImages.findAll()
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async findById(id) {
-        try {
-            return await models.PostImages.findOne({
-                where: {id}
-            });
-        } catch (error) {
-            console.log(error)
-        }
-    }
     async updatePostImage(id, data) {
         try {
             const model = await this.findById(id)

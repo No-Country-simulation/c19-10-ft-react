@@ -50,7 +50,7 @@ const invitationSchema = {
         field: "invitation_date"
     },
     userId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: User,
@@ -61,7 +61,7 @@ const invitationSchema = {
         field: "userId",
       },
       eventId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: Event,

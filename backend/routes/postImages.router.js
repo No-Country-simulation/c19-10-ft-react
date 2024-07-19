@@ -5,7 +5,6 @@ const router = express.Router()
 const postImagesController = require("../controllers/postImages.controller")
 
 router.post("/create", postImagesController.create)
-router.get("/all", postImagesController.get)
 router.route('/:id')
         .get(postImagesController.getById)
         .put(postImagesController.update)

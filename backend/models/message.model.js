@@ -26,13 +26,8 @@ const messageSchema = {
         type: DataTypes.TEXT,
         field: "message"
     },
-    date: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        field: "date"
-    },
     userId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: User,
@@ -43,7 +38,7 @@ const messageSchema = {
         field: "userId",
       },
       eventId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: Event,

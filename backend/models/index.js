@@ -2,13 +2,14 @@
 // y en la funcion setupModels, se agrega la linea correspondiente, replicando la que esta y cambiando sus respectivos datos del modelo
 
 const { User, userSchema } = require("./users.model");
-const { Event, eventSchema } = require("./event.model")
-const { Invitation, invitationSchema } = require("./invitation.model")
-const { Donation, donationSchema } = require("./donation.model")
-const { Message, messageSchema } = require("./message.model")
-const { Post, postSchema } = require("./post.model")
-const { PostImages, postImagesSchema } = require("./postImages.model")
-const initModels = require('./initModels')
+const { Event, eventSchema } = require("./event.model");
+const { Invitation, invitationSchema } = require("./invitation.model");
+const { Donation, donationSchema } = require("./donation.model");
+const { Message, messageSchema } = require("./message.model");
+const { Post, postSchema } = require("./post.model");
+const { PostImages, postImagesSchema } = require("./postImages.model");
+const { Image, imageSchema } = require('./images.model');
+const initModels = require('./initModels');
 
 function setupModels(sequelize) {
   User.init(userSchema, User.config(sequelize));
@@ -18,6 +19,7 @@ function setupModels(sequelize) {
   Message.init(messageSchema, Message.config(sequelize));
   Post.init(postSchema, Post.config(sequelize));
   PostImages.init(postImagesSchema, PostImages.config(sequelize));
+  Image.init(imageSchema, Image.config(sequelize));
 
   initModels(sequelize);
 }
