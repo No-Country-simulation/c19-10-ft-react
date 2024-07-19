@@ -33,7 +33,7 @@ const postSchema = {
     },
     userId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: User,
           key: "id",
@@ -44,7 +44,7 @@ const postSchema = {
       },
       eventId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: Event,
           key: "id",

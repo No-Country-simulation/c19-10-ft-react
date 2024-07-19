@@ -18,10 +18,8 @@ class Event extends Model {
 const eventSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
-    type: DataTypes.INTEGER,
-    // type: DataTypes.UUID
+    type: DataTypes.UUID
   },
   title: {
     allowNull: false,
@@ -55,7 +53,7 @@ const eventSchema = {
   },
   userId: {
     allowNull: false,
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     references: {
       model: User,
       key: "id",

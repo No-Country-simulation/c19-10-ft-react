@@ -27,7 +27,7 @@ const imageSchema = {
     },
     userId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: User,
           key: "id",

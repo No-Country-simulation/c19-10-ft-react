@@ -28,7 +28,7 @@ const messageSchema = {
     },
     userId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: User,
           key: "id",
@@ -39,7 +39,7 @@ const messageSchema = {
       },
       eventId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: Event,
           key: "id",
