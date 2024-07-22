@@ -4,7 +4,8 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import NewEventBackground from "../../../public/new-event.webp";
+import NewEventBackground from "../../../../public/new-event.webp";
+import formatDate from "@/utils/formatDate";
 
 const Events = () => {
   const router = useRouter();
@@ -31,16 +32,6 @@ const Events = () => {
     }
   };
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${day}-${month}-${year}`;
-  }
-
   const handlePrev = () => {
     setCurrentPage((prevPage) =>
       prevPage === 0 ? totalPages - 1 : prevPage - 1
@@ -51,6 +42,10 @@ const Events = () => {
     setCurrentPage((prevPage) =>
       prevPage === totalPages - 1 ? 0 : prevPage + 1
     );
+  };
+
+  const goToEventDetail = (id) => {
+    router.push(`/home/events/${id}`);
   };
 
   const goBack = () => {
@@ -132,8 +127,9 @@ const Events = () => {
               <div className="px-8 md:px-12 grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {currentItems?.map((item, index) => (
                   <div
+                    onClick={() => goToEventDetail(item.id)}
                     key={index}
-                    className="bg-white border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
+                    className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
                   >
                     <Image
                       src={NewEventBackground}
