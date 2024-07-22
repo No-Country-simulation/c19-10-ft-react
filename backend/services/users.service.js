@@ -1,6 +1,7 @@
 const { models } = require("../libs/sequelize");
 const bcrypt = require("bcryptjs");
-const { Op } = require('sequelize')
+const { Op } = require('sequelize');
+const { sendEmailFunction } = require("../nodemailer/sendEmail");
 
 class UsersService {
   constructor() { }
@@ -13,13 +14,16 @@ class UsersService {
 
     try {
       if (!validateUser) {
-        const user = await models.User.create({
+        const user =  models.User.create({
           name,
           email,
           password: hashedPassword,
         });
-        return user
+        // await sendEmailFunction(email, name)
+        return user;
       }
+     
+      
     } catch (error) {
       return error
     }
