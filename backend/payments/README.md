@@ -12,3 +12,25 @@ También se recomienda crear una integración propia desde **https://www.mercado
 
 👨🏽‍💻 Falta editar algunos detalles, está en proceso
 
+## Para pruebas:
+*DNI para las tarjetas de prueba*; 12345678
+**Tarjetas de prueba**
+*-Mastercard*:
+5031 7557 3453 0604
+CVV 123
+VENC 11/25
+*-VISA*: 
+4509 9535 6623 3704
+CVV 123
+VENC 11/25
+*-American Express:*
+3711 803032 57522
+CVV 1234
+VENC 11/25
+
+*Estado de Pago (Nombre del titular):*
+Para pagos aprobados: **APRO**,
+Para pagos pendientes: **CONT**,
+Para pagos rechazados (distintas opciones): **FUND**, **EXPI**, **FORM**
+
+

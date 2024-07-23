@@ -1,4 +1,5 @@
 const { models } = require("../libs/sequelize")
+const UUID = require("uuid")
 
 class EventService {
     constructor() { }
@@ -7,6 +8,7 @@ class EventService {
 
         const { title, description, date, type, userId } = eventData;
         const event = await models.Event.create({
+            id: UUID.v4(),
             title,
             description,
             date,

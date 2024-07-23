@@ -1,6 +1,7 @@
 const { models } = require("../libs/sequelize");
 const bcrypt = require("bcryptjs");
-const { Op } = require('sequelize')
+const { Op } = require('sequelize');
+const uuid = require("uuid")
 
 class UsersService {
   constructor() { }
@@ -14,6 +15,7 @@ class UsersService {
     try {
       if (!validateUser) {
         const user = await models.User.create({
+          id: uuid.v4(),
           name,
           email,
           password: hashedPassword,

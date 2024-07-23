@@ -9,7 +9,7 @@ const {
   NODE_ENV,
   PORT,
   MP_TOKEN,
-  NGROK_SERVER
+  HOST
 } = process.env;
 
 const config = {
@@ -21,7 +21,7 @@ const config = {
   port: PORT || 3000,
   env: NODE_ENV || "env",
   mpToken: MP_TOKEN,
-  ngrokServer: NGROK_SERVER
+  host: HOST
 };
 
 module.exports = { config };

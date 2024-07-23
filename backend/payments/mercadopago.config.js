@@ -5,8 +5,7 @@ const client = new MercadoPagoConfig({
     accessToken: `${ config.mpToken }`, 
     options: { timeout: 5000 } 
 });
-console.log( config.mpToken)
-// const httpsUrl = `${ config.ngrokServer }`
+
 
 const preference = new Preference(client);
 
@@ -21,12 +20,11 @@ const donation = async (req, res) => {
           }
         ],
         back_urls: {
-          success: 'http://localhost:3001/api/v1/donation/success',
-          failure: 'http://localhost:3001/api/v1/donation/failure',
-          pending: 'http://localhost:3001/api/v1/donation/pending',
+          success: `${ config.host }$/api/v1/donation/success`,
+          failure: `${ config.host }$/api/v1/donation/dailure`,
+          pending: `${ config.host }$/api/v1/donation/pending`,
         },
         auto_return: 'approved',
-        // notification_url: `${httpsUrl}/api/v1/donation/webhook`,
         external_reference: id
       };
   
