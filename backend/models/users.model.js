@@ -16,10 +16,8 @@ class User extends Model {
 const userSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
-    type: DataTypes.INTEGER,
-    // type:DataTypes.UUID
+    type:DataTypes.UUID
   },
   name: {
     allowNull: false,
@@ -29,8 +27,8 @@ const userSchema = {
   email: {
     allowNull: false,
     type: DataTypes.STRING,
-    // unique: true, 
-    // validate: {isEmail: true},
+    unique: true, 
+    validate: {isEmail: true},
     field: "email",
   },
   password: {

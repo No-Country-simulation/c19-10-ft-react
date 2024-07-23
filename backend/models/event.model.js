@@ -18,10 +18,8 @@ class Event extends Model {
 const eventSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
-    type: DataTypes.INTEGER,
-    // type: DataTypes.UUID
+    type: DataTypes.UUID
   },
   title: {
     allowNull: false,
@@ -45,16 +43,17 @@ const eventSchema = {
       "Cumpleaños Infantil",
       "Cumpleaños de 15",
       "Cumpleaños de Adulto",
+      "Evento Celebria",
       "Baby Shower",
       "Despedida de Soltero/a",
       "Evento Empresarial"
     ),
-    toDefaultValue: "Cumpleaños de Adulto",
+    toDefaultValue: "Evento Celebria",
     field: "type",
   },
   userId: {
     allowNull: false,
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     references: {
       model: User,
       key: "id",
@@ -63,16 +62,6 @@ const eventSchema = {
     onUpdate: "CASCADE",
     field: "userId",
   },
-  // img: {
-  //     allowNull: true,
-  //     type: DataTypes.STRING,
-  //     field: "img"
-  // }
-  // location: {
-  //     allowNull: false,
-  //     type: DataTypes.STRING,
-  //     field: "location"
-  // },
 };
 
 module.exports = {

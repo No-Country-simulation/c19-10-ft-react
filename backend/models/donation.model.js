@@ -23,6 +23,7 @@ const donationSchema = {
         type: DataTypes.UUID
     },
     title: {
+        allowNull: true,
         type: DataTypes.STRING,
         field: "title"
     },
@@ -32,6 +33,7 @@ const donationSchema = {
         field: "amount"
     },
     description:{
+        allowNull: true,
         type: DataTypes.TEXT,
         field: "decription",
     },
@@ -41,8 +43,8 @@ const donationSchema = {
         field: "date"
     },
     userId: {
-        allowNull: true,
-        type: DataTypes.INTEGER,
+        allowNull: false,
+        type: DataTypes.UUID,
         references: {
           model: User,
           key: "id",
@@ -52,8 +54,8 @@ const donationSchema = {
         field: "userId",
       },
       eventId: {
-        allowNull: true,
-        type: DataTypes.INTEGER,
+        allowNull: false,
+        type: DataTypes.UUID,
         references: {
           model: Event,
           key: "id",
