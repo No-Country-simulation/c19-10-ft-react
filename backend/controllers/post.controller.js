@@ -4,10 +4,25 @@ const postService = new PostService()
 
 const create = async (req, res) => {
     try {
-        const newPost = await postService.create(req.body)
-        res.status(201).json({ message: "Post created successfully", newPost })
+        const { title, content, userId, eventId } = req.body;
+        if(userId && eventId && (content || title)){
+            const data = { title, content, userId, eventId }
+            const newPost = await postService.create(data)
+            res.status(201).json({ message: "Post created successfully", newPost })
+        } else {
+            res.status(400).json({
+                frontendMessage: "content or title must been filled",
+                message: "Some data is missing or incorrect, data must be bring as...",
+                fields: {
+                    title: "String (nulleable)",
+                    content: "String (nulleable)",
+                    userId: "Integer",
+                    eventId: "Integer"
+                }
+            });
+        }
     } catch (error) {
-        res.status(400).json({ message: "Error creating post", error });
+        res.status(400).json({ message: error.message, error });
     }
 }
 

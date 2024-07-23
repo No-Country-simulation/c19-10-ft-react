@@ -4,10 +4,13 @@
 // 1 : 1 -> hasOne
 
 const initModels = (sequelize) => {
-  const { User, Event, Invitation, Donation, Message, Post, PostImages } = sequelize.models;
+  const { User, Event, Invitation, Donation, Message, Post, PostImages, Image } = sequelize.models;
 
   User.hasMany(Invitation, { foreignKey: 'userId', as: 'invitations' });
   Invitation.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
+
+  User.hasMany(Event, { foreignKey: 'userId', as: 'events' });
+  Event.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
 
   Event.hasMany(Invitation, { foreignKey: 'eventId', as: 'invitations' });
   Invitation.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
@@ -30,14 +33,15 @@ const initModels = (sequelize) => {
   Event.hasMany(Post, { foreignKey: 'eventId', as: 'posts' });
   Post.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
 
-  User.hasMany(PostImages, { foreignKey: 'userId', as: 'post_images' });
-  PostImages.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
-
-  Event.hasMany(PostImages, { foreignKey: 'eventId', as: 'post_images' });
-  PostImages.belongsTo(Event, { foreignKey: 'eventId', as: 'event', targetKey: 'id' });
   
   Post.hasMany(PostImages, { foreignKey: 'postId', as: 'post_images' });
   PostImages.belongsTo(Post, { foreignKey: 'postId', as: 'post', targetKey: 'id' });
-};
+  
+  Image.hasMany(PostImages, { foreignKey: 'imgId', as: 'post_images' });
+  PostImages.belongsTo(Image, { foreignKey: 'imgId', as: 'image', targetKey: 'id' });
+
+  User.hasMany(Image, { foreignKey: 'userId', as: 'image' });
+  Image.belongsTo(User, { foreignKey: 'userId', as: 'user', targetKey: 'id' });
+}
 
 module.exports = initModels;

@@ -24,9 +24,13 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    const token = jwt.sign({ name: user.name, email: user.email }, JWT_SECRET, {
-      expiresIn: "30m",
-    });
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email },
+      JWT_SECRET,
+      {
+        expiresIn: "30m",
+      }
+    );
     res.json({ token });
   } catch (error) {
     res.status(400).json({ message: "Error logging in", error });
@@ -70,7 +74,7 @@ const resetPassword = async (req, res) => {
 const get = async (req, res) => {
   try {
     const AllUsers = await usersService.findUsers();
-    res.status(200).json({ message: "These are all the users", AllUsers })
+    res.status(200).json({ message: "These are all the users", AllUsers });
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -78,9 +82,9 @@ const get = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const { id } = req.params
-    const userById = await usersService.findById(id)
-    res.status(200).json({ message: `User with id: ${id}, finded`, userById })
+    const { id } = req.params;
+    const userById = await usersService.findById(id);
+    res.status(200).json({ message: `User with id: ${id}, finded`, userById });
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -88,9 +92,11 @@ const getById = async (req, res) => {
 
 const getByName = async (req, res) => {
   try {
-    const { name } = req.params
-    const userByName = await usersService.findByName(name)
-    res.status(200).json({ message: `User with name: ${name}, finded`, userByName })
+    const { name } = req.params;
+    const userByName = await usersService.findByName(name);
+    res
+      .status(200)
+      .json({ message: `User with name: ${name}, finded`, userByName });
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }
@@ -101,7 +107,9 @@ const update = async (req, res) => {
     const { id } = req.params;
     const body = req.body;
     const updatedUser = await usersService.updateUser(id, body);
-    res.status(200).json({ message: `User with id: ${id}, updated`, updatedUser })
+    res
+      .status(200)
+      .json({ message: `User with id: ${id}, updated`, updatedUser });
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }

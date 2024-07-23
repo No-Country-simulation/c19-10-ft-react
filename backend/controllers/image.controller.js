@@ -1,32 +1,41 @@
-const PostImagesService = require("../services/postImages.service");
+const ImageService = require("../services/image.service");
 
-const postImagesService = new PostImagesService()
+const imageService = new ImageService()
 
 const create = async (req, res) => {
-    
     try {
-        const { postId, imgId } = req.body;
-
-        if(postId && imgId){
-            const data = { postId, imgId }
-            const newImage = await postImagesService.create(data)
+        const { url, userId } = req.body;
+        if(url && userId) {
+            data = { url, userId };
+            const newImage = await imageService.create(data)
             res.status(201).json({ message: "Image created successfully", newImage })
-
         } else {
             res.status(400).json({
-                message: "Is mandatory to bring data as...",
-                fields: {postId: "uuid", imgId: "uuid"}
+                message: "Is mandatory to bring data as...", 
+                fields: {
+                    url: "www.url.com",
+                    userId: "integer",
+                }
             });
         }
     } catch (error) {
-        res.status(400).json({ message: "Error creating image", error });
+        res.status(400).json({ message: error.message, error });
+    }
+}
+
+const get = async (req, res) => {
+    try {
+        const allImages = await imageService.findAll()
+        res.status(200).json({ message: "These are the total images", allImages })
+    } catch (error) {
+        res.status(400).json({ message: "Error getting images", error });
     }
 }
 
 const getById = async (req, res) => {
     try {
         const { id } = req.params
-        const imageById = await postImagesService.findById(id)
+        const imageById = await imageService.findById(id)
         res.status(200).json({ message: `Image with id: ${id} found`, imageById })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
@@ -36,7 +45,7 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const body = req.body;
-        const updatedImage = await postImagesService.updatePost(id, body);
+        const updatedImage = await imageService.updatePost(id, body);
         res.status(200).json({ message: `Post with id: ${id} updated`, updatedImage })
     } catch (error) {
         res.status(500).send({ success: false, message: error.message });
@@ -46,7 +55,7 @@ const update = async (req, res) => {
 const _delete = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedImage = await postImagesService.delete(id);
+        const deletedImage = await imageService.delete(id);
         res.status(200).json({ message: `Post with id: ${id} deleted`, deletedImage })
     } catch (error) {
         res.status(500).send({ success: false, message: error.message });
@@ -56,6 +65,7 @@ const _delete = async (req, res) => {
 
 module.exports = {
     create,
+    get,
     getById,
     update,
     _delete
