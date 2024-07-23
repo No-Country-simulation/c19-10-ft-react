@@ -11,23 +11,53 @@ class UsersService {
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
+    const subject = "Welcome to Celebria."
+    const text = `Hello, ${name}, \n\Welcome to our platform! We invite you to create your first event. \n\Our team is excited to see those videos and photos\n\nThank you for joining us! `
 
     try {
       if (!validateUser) {
-        const user =  models.User.create({
+        const user = models.User.create({
           name,
           email,
           password: hashedPassword,
         });
-       await sendEmailFunction(email, name)
+        await sendEmailFunction(email, subject, text)
         return user;
       }
-     
-      
+
+
     } catch (error) {
       return error
     }
   }
+
+  async updatePassword(email, url) {
+    try {
+         console.log(email)
+      const subject = "Celebria's Team: Reset password"
+      const text = `Aca va el Link del recupero \n\ ${url}`
+      if (email) await sendEmailFunction(email, subject, text)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async resetPassword(email, password) {
+    try {
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await models.User.update({ where: { email } }, {
+        password: hashedPassword,
+      })
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
 
   async findByEmail(email) {
     return await models.User.findOne({ where: { email } });
