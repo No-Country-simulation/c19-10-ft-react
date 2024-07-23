@@ -37,6 +37,40 @@ const login = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+
+  try {
+    const { email } = req.body;
+    const token = jwt.sign({ email: email }, JWT_SECRET, {
+      expiresIn: "5m",
+    });
+    const resetUrl = `http://localhost:3000/reset-password?token=${token}`
+    if (email) await usersService.updatePassword(email, resetUrl)
+
+    res.status(200).json({ message: "Password reset email sent" })
+
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: "Error de cosito", error });
+  }
+
+}
+
+const resetPassword = async (req, res) => {
+
+  try {
+    const password = req.body.password
+    const email = req.body.email
+    if (req.params.token) {
+      return await usersService.resetPassword(email, password)
+    }
+
+  } catch (error) {
+    res.status(500).send({ success: false, message: error.message });
+  }
+
+}
+
 const get = async (req, res) => {
   try {
     const AllUsers = await usersService.findUsers();
@@ -98,5 +132,11 @@ module.exports = {
   getById,
   getByName,
   update,
+  updatePassword,
+  resetPassword,
   _delete,
 };
+
+
+
+

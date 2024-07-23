@@ -18,9 +18,11 @@ class Message extends Model {
 
 const messageSchema = {
     id: {
-        allowNull: false, 
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.UUID
+        type: DataTypes.INTEGER,
+        // type:DataTypes.UUID
     },
     message: {
         type: DataTypes.TEXT,
