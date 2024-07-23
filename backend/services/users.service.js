@@ -19,7 +19,7 @@ class UsersService {
           email,
           password: hashedPassword,
         });
-        // await sendEmailFunction(email, name)
+       await sendEmailFunction(email, name)
         return user;
       }
      
