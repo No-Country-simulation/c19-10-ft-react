@@ -59,7 +59,7 @@ const Events = () => {
   return (
     <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
       <Sidebar />
-      {events.length === 0 ? (
+      {!events || events?.length === 0 ? (
         <section className="w-full h-screen flex flex-col justify-center items-center">
           <div className="w-full h-full flex flex-col justify-center items-center px-2 md:px-0">
             <svg
