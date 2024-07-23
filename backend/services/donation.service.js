@@ -6,7 +6,7 @@ class DonationService {
 
     async create(donationData) {
 
-        const { title, amount, description, date, eventId, userId } = donationData;
+        const { title, amount, description, date, eventId, userId, paymentStatus } = donationData;
         const donation = await models.Donation.create({
             id: uuid.v4(),
             title,
@@ -14,15 +14,16 @@ class DonationService {
             description,
             date,
             eventId,
-            userId
+            userId,
+            paymentStatus
         });
         return donation
     }
     
-    async updateDonationStatus(id, status) {
+    async updateDonationStatus(id, paymentStatus) {
         try {
             const model = await this.findById(id);
-            return await model.Donation.update({ paymentStatus: status });
+            return await model.update({ paymentStatus: paymentStatus });
         } catch (error) {
             console.error(error);
         }
