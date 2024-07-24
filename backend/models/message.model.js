@@ -20,7 +20,8 @@ const messageSchema = {
     id: {
         allowNull: false, 
         primaryKey: true,
-        type: DataTypes.UUID
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
     },
     message: {
         type: DataTypes.TEXT,

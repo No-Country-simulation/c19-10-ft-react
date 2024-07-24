@@ -20,7 +20,8 @@ const invitationSchema = {
     id: {
         allowNull: false, 
         primaryKey: true,
-        type: DataTypes.UUID
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
     },
     state: {
         allowNull: false,
