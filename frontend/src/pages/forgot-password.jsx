@@ -71,7 +71,7 @@ const ForgotPasswordPage = () => {
             } catch (error) {
               console.error("Error al recuperar la contraseña:", error);
               Swal.fire({
-                icon: "success",
+                icon: "error",
                 title: "Ocurrió un error al intentar recuperar la contraseña.",
                 showConfirmButton: false,
                 timer: 1500,
