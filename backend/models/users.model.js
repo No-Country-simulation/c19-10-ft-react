@@ -17,7 +17,8 @@ const userSchema = {
   id: {
     allowNull: false,
     primaryKey: true,
-    type:DataTypes.UUID
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
   },
   name: {
     allowNull: false,
@@ -27,8 +28,8 @@ const userSchema = {
   email: {
     allowNull: false,
     type: DataTypes.STRING,
-    unique: true, 
-    validate: {isEmail: true},
+    unique: true,
+    validate: { isEmail: true },
     field: "email",
   },
   password: {
@@ -40,7 +41,7 @@ const userSchema = {
     allowNull: false,
     defaultValue: "user",
     type: DataTypes.ENUM("user", "admin", "superAdmin"),
-  }
+  },
 };
 
 module.exports = {

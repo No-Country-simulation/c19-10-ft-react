@@ -4,12 +4,11 @@ const router = express.Router();
 
 const usersController = require("../controllers/users.controller");
 
-router.post("/updatepassword", usersController.updatePassword);
-router.patch("/resetpassword/:token", usersController.resetPassword);
+router.post("/forgot-password", usersController.updatePassword);
+router.put("/reset-password", usersController.resetPassword);
 
 router.post("/register", usersController.register);
 router.post("/login", usersController.login);
-
 
 router.get("/", usersController.get);
 router.get("/:id", usersController.getById);

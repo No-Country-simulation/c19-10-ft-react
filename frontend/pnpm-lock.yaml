@@ -4,7 +4,49 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  autoprefixer:
+    specifier: ^10.4.19
+    version: 10.4.19(postcss@8.4.39)
+  axios:
+    specifier: ^1.7.2
+    version: 1.7.2
+  daisyui:
+    specifier: ^4.12.10
+    version: 4.12.10(postcss@8.4.39)
+  dotenv:
+    specifier: ^16.4.5
+    version: 16.4.5
+  formik:
+    specifier: ^2.4.6
+    version: 2.4.6(react@18.3.1)
+  jwt-decode:
+    specifier: ^4.0.0
+    version: 4.0.0
+  next:
+    specifier: 14.2.4
+    version: 14.2.4(react-dom@18.3.1)(react@18.3.1)
+  postcss:
+    specifier: ^8.4.39
+    version: 8.4.39
+  react:
+    specifier: ^18.3.1
+    version: 18.3.1
+  react-datepicker:
+    specifier: ^7.3.0
+    version: 7.3.0(react-dom@18.3.1)(react@18.3.1)
+  react-dom:
+    specifier: ^18.3.1
+    version: 18.3.1(react@18.3.1)
+  sweetalert2:
+    specifier: ^11.12.2
+    version: 11.12.2
+  tailwindcss:
+    specifier: ^3.4.6
+    version: 3.4.6
+  yup:
+    specifier: ^1.4.0
+    version: 1.4.0
 
   .:
     dependencies:
@@ -2241,7 +2283,13 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  eastasianwidth@0.2.0: {}
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /eastasianwidth@0.2.0:
+    resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
   electron-to-chromium@1.4.829: {}
 

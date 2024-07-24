@@ -1,63 +1,68 @@
 const { models } = require("../libs/sequelize");
 const bcrypt = require("bcryptjs");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 const { sendEmailFunction } = require("../nodemailer/sendEmail");
+const { v4: uuidv4 } = require("uuid");
 
 class UsersService {
-  constructor() { }
+  constructor() {}
 
   async register(userData) {
-
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
-    const subject = "Welcome to Celebria."
-    const text = `Hello, ${name}, \n\Welcome to our platform! We invite you to create your first event. \n\Our team is excited to see those videos and photos\n\nThank you for joining us! `
+    const subject = "Welcome to Celebria.";
+    const text = `Hello, ${name}, \n\Welcome to our platform! We invite you to create your first event. \n\Our team is excited to see those videos and photos\n\nThank you for joining us! `;
 
     try {
       if (!validateUser) {
         const user = models.User.create({
+          id: uuidv4(),
           name,
           email,
           password: hashedPassword,
         });
-        await sendEmailFunction(email, subject, text)
+        await sendEmailFunction(email, subject, text);
         return user;
       }
-
-
     } catch (error) {
-      return error
+      return error;
     }
   }
 
   async updatePassword(email, url) {
     try {
-         console.log(email)
-      const subject = "Celebria's Team: Reset password"
-      const text = `Aca va el Link del recupero \n\ ${url}`
-      if (email) await sendEmailFunction(email, subject, text)
-
+      const subject = "Celebria's Team: Reset password";
+      const text = `Aca va el Link del recupero \n\ ${url}`;
+      if (email) await sendEmailFunction(email, subject, text);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   async resetPassword(email, password) {
     try {
-
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      await models.User.update({ where: { email } }, {
-        password: hashedPassword,
-      })
+      const result = await models.User.update(
+        { password: hashedPassword },
+        { where: { email } }
+      );
+      const options = {
+        subject: "Contraseña resstablecida con exito",
+        text: "Su contraseña ha sido restablecida con exito, por favor intente ingresar a la plataforma con sus nuevas credenciales",
+      };
+      await sendEmailFunction(email, options.subject, options.text);
 
+      if (result[0] === 0) {
+        console.log("Usuario no encontrado o contraseña no actualizada");
+      } else {
+        console.log("Contraseña actualizada exitosamente");
+      }
     } catch (error) {
-      console.log(error)
-
+      console.log("Error al actualizar la contraseña:", error);
     }
   }
-
 
   async findByEmail(email) {
     return await models.User.findOne({ where: { email } });
@@ -65,7 +70,7 @@ class UsersService {
 
   async findUsers() {
     try {
-      return await models.User.findAll()
+      return await models.User.findAll();
     } catch (error) {
       console.error(error);
     }
@@ -83,10 +88,9 @@ class UsersService {
     try {
       return await models.User.findAll({
         where: {
-          name:
-            { [Op.iLike]: `%${name}%` }
-        }
-      })
+          name: { [Op.iLike]: `%${name}%` },
+        },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -94,13 +98,12 @@ class UsersService {
 
   async updateUser(id, data) {
     try {
-      const updatedUser = await this.findById(id)
+      const updatedUser = await this.findById(id);
       return await updatedUser.update(data);
     } catch (error) {
       console.error(error);
     }
   }
-
 
   async deleteUser(id) {
     try {
