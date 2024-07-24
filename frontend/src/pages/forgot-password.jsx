@@ -7,6 +7,7 @@ import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -60,12 +61,14 @@ const ForgotPasswordPage = () => {
                 values
               );
               // Aquí puedes agregar la lógica para mostrar un mensaje de éxito o redirigir al usuario
-              alert(
+              Swal.success(
                 "Por favor, revisa tu correo electrónico para restablecer tu contraseña."
               );
             } catch (error) {
               console.error("Error al recuperar la contraseña:", error);
-              alert("Ocurrió un error al intentar recuperar la contraseña.");
+              Swal.error(
+                "Ocurrió un error al intentar recuperar la contraseña."
+              );
             } finally {
               setIsSubmitting(false);
             }
