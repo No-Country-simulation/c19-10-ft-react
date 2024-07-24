@@ -63,7 +63,9 @@ const LoginPage = () => {
                 "http://localhost:3001/api/v1/users/login",
                 values
               );
-              localStorage.setItem("token", response.data.token);
+              const { accessToken, refreshToken } = response.data;
+              localStorage.setItem("token", accessToken);
+              localStorage.setItem("refreshToken", refreshToken);
               router.push("/home");
             } catch (error) {
               console.error("Error en el login:", error);
