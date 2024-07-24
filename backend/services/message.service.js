@@ -1,19 +1,13 @@
-const {models}=require('../libs/sequelize')         
+const { models } = require("../libs/sequelize");
 
 class MessageService {
   constructor() {}
   async createMessage(messageData) {
     const { message, date, userId, eventId } = messageData;
-    
 
     try {
-    
-      const newMessage = await models.Message.create(
-        
-        {
-
-        
-          message,
+      const newMessage = await models.Message.create({
+        message,
         date,
         userId,
         eventId,
@@ -39,7 +33,7 @@ class MessageService {
 
   async updateMessage(id, messageData) {
     try {
-      const message = await this.getMessageById(id); 
+      const message = await this.getMessageById(id);
       if (!message) {
         throw new Error("Message not found");
       }
