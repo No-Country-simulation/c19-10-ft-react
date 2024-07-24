@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { jwtDecode } from "jwt-decode";
 
 const ResetPasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -16,14 +17,19 @@ const ResetPasswordSchema = Yup.object().shape({
 const ResetPassword = () => {
   const router = useRouter();
   const { token } = router.query;
+  const decodedToken = jwtDecode(token);
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    console.log("log del token", token);
     try {
-      //   await axios.post("http://localhost:3001/api/users/reset-password", {
-      //     token,
-      //     ...values,
-      //   });
+      await axios.put(
+        `http://localhost:3001/api/v1/users/reset-password?token=${token}`,
+        {
+          email: decodedToken?.email,
+          password: values.password,
+        }
+      );
       setMessage("Contraseña restablecida con éxito.");
       setTimeout(() => router.push("/login"), 2000);
     } catch (error) {

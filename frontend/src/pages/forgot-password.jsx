@@ -57,18 +57,25 @@ const ForgotPasswordPage = () => {
             setIsSubmitting(true);
             try {
               await axios.post(
-                "http://localhost:3001/users/forgot-password",
+                "http://localhost:3001/api/v1/users/forgot-password",
                 values
               );
-              // Aquí puedes agregar la lógica para mostrar un mensaje de éxito o redirigir al usuario
-              Swal.success(
-                "Por favor, revisa tu correo electrónico para restablecer tu contraseña."
-              );
+              Swal.fire({
+                icon: "success",
+                title:
+                  "Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              router.push("/");
             } catch (error) {
               console.error("Error al recuperar la contraseña:", error);
-              Swal.error(
-                "Ocurrió un error al intentar recuperar la contraseña."
-              );
+              Swal.fire({
+                icon: "success",
+                title: "Ocurrió un error al intentar recuperar la contraseña.",
+                showConfirmButton: false,
+                timer: 1500,
+              });
             } finally {
               setIsSubmitting(false);
             }
