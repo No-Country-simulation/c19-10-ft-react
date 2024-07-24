@@ -1,30 +1,44 @@
 const { models } = require("../libs/sequelize");
+const { sendEmailFunction } = require("../nodemailer/sendEmail");
+const eventService = require("./event.service");
+const EVENT_SERVICE = new eventService();
+const { v4: uuidv4 } = require("uuid");
+require("dotenv").config();
+const { JWT_SECRET } = process.env;
+const jwt = require("jsonwebtoken");
 
 class InvitationService {
   constructor() {}
 
   async createInvitation(invitationData) {
-    const {
-      state,
-      token,
-      invitedEmail,
-      acceptationDate,
-      invitationDate,
-      userId,
-      eventId,
-    } = invitationData;
+    const { invitedEmail, userId, eventId } = invitationData;
 
     try {
       const newInvitation = await models.Invitation.create({
-        state,
-        token,
+        id: uuidv4(),
         invitedEmail,
-        acceptationDate,
-        invitationDate,
+        invitationDate: new Date(),
         userId,
         eventId,
       });
-
+      const eventData = await EVENT_SERVICE.findById(eventId);
+      const token = jwt.sign(
+        { invitationId: newInvitation.id, isInvitation: true, eventData },
+        JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+      const invitation_url = `http://localhost:3000?token=${token}`;
+      const emailOptions = {
+        subject: "Tienes una invitación a un evento - Celebria !",
+        text: `Has sido invitado al evento ${eventData.title}, puedes aceptar o rechazar la invitación ingresando al siguiente link: ${invitation_url}`,
+      };
+      await sendEmailFunction(
+        invitedEmail,
+        emailOptions.subject,
+        emailOptions.text
+      );
       return newInvitation;
     } catch (error) {
       throw new Error(error.message);

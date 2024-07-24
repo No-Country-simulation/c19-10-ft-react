@@ -6,7 +6,6 @@ const messageRouter = require("./message.router");
 const invitationRouter = require("./invitation.router");
 const postRouter = require("./post.router");
 const postImagesRouter = require("./postImages.router");
-const messageRouter = require("./message.router");
 const imageRouter = require("./image.router");
 
 function routerApi(app) {
