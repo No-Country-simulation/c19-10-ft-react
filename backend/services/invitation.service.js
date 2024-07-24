@@ -1,4 +1,4 @@
-const { models } = require('../libs/sequelize');
+const { models } = require("../libs/sequelize");
 
 class InvitationService {
   constructor() {}
@@ -36,7 +36,7 @@ class InvitationService {
       return await models.Invitation.findByPk(id);
     } catch (error) {
       console.error(error);
-      throw new Error('Unable to get invitation');
+      throw new Error("Unable to get invitation");
     }
   }
 
@@ -45,7 +45,7 @@ class InvitationService {
       return await models.Invitation.findAll({ where: { userId } });
     } catch (error) {
       console.error(error);
-      throw new Error('Unable to get invitations');
+      throw new Error("Unable to get invitations");
     }
   }
 
@@ -53,12 +53,12 @@ class InvitationService {
     try {
       const invitation = await this.getInvitationById(id);
       if (!invitation) {
-        throw new Error('Invitation not found');
+        throw new Error("Invitation not found");
       }
       return await invitation.update(invitationData);
     } catch (error) {
       console.error(error);
-      throw new Error('Unable to update invitation');
+      throw new Error("Unable to update invitation");
     }
   }
 
@@ -66,13 +66,13 @@ class InvitationService {
     try {
       const invitation = await this.getInvitationById(id);
       if (!invitation) {
-        throw new Error('Invitation not found');
+        throw new Error("Invitation not found");
       }
       await invitation.destroy();
       return { deleted: true };
     } catch (error) {
       console.error(error);
-      throw new Error('Unable to delete invitation');
+      throw new Error("Unable to delete invitation");
     }
   }
 }
