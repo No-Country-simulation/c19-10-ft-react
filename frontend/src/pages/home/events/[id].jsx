@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import formatDate from "@/utils/formatDate";
-import InvitationModal from "@/components/InvitationModal";
+import InvitationFormModal from "@/components/InvitationFormModal";
 
 const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +17,6 @@ const EventDetail = () => {
 
   const getEventData = async (id) => {
     const res = await axios.get(`${API_BASE_URL}/event/${id}`);
-    console.log(res.data.eventById);
     return res.data.eventById;
   };
 
@@ -56,7 +55,11 @@ const EventDetail = () => {
           </p>
         </div>
       </div>
-      <InvitationModal isOpen={isModalOpen} onClose={closeModal} />
+      <InvitationFormModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        eventId={id}
+      />
     </div>
   );
 };

@@ -12,10 +12,6 @@ const PasswordModal = ({ isOpen, onClose }) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      //   const response = await axios.post(
-      //     "http://localhost:3001/api/users/send-reset-password-email",
-      //     { email }
-      //   );
       setMessage("Email de recuperación enviado. Por favor, revisa tu correo.");
     } catch (error) {
       setMessage(
