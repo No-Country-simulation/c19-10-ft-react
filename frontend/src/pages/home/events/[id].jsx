@@ -127,29 +127,38 @@ const EventDetail = () => {
           </div>
 
           <div className="overflow-x-auto w-full h-full text-black">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invitations?.map((invitation) => (
-                  <tr key={invitation.id}>
-                    <td>{invitation.invitedEmail}</td>
-                    <td>
-                      {iconsMap[invitation.state] && (
-                        <span className="flex gap-2">
-                          {statusTranslation[invitation.state]}
-                          {iconsMap[invitation.state]()}
-                        </span>
-                      )}
-                    </td>
+            {invitations.length > 0 ? (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {invitations?.map((invitation) => (
+                    <tr key={invitation.id}>
+                      <td>{invitation.invitedEmail}</td>
+                      <td>
+                        {iconsMap[invitation.state] && (
+                          <span className="flex gap-2">
+                            {statusTranslation[invitation.state]}
+                            {iconsMap[invitation.state]()}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="w-full h-full py-24 flex justify-center items-center">
+                <p className="text-primary font-semibold text-2xl">
+                  Aun no has invitado a nadie, prueba invitando a alguien a tu
+                  evento :)
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <InvitationFormModal
