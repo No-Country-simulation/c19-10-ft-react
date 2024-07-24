@@ -4,6 +4,8 @@ const invitationController = require("../controllers/invitation.controller");
 
 router.post("/create", invitationController.createInvitation);
 
+router.get("/event/:id", invitationController.getInvitationsByEventId);
+
 router.get("/:id", invitationController.getInvitationById);
 
 router.get("/user/:userId", invitationController.getInvitationsByUserId);

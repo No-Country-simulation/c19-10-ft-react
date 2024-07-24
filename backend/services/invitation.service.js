@@ -54,6 +54,14 @@ class InvitationService {
     }
   }
 
+  async getInvitationsByEventId(id) {
+    try {
+      return await models.Invitation.findAll({ where: { eventId: id } });
+    } catch (error) {
+      throw new Error("Unable to get invitations");
+    }
+  }
+
   async getInvitationsByUserId(userId) {
     try {
       return await models.Invitation.findAll({ where: { userId } });

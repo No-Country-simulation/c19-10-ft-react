@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
 
-const InvitationModal = ({ isOpen, onClose, eventId }) => {
+const InvitationModal = ({ isOpen, onClose, eventId, onInvitationSent }) => {
   const [token, setToken] = useState(null);
 
   const eventSchema = Yup.object().shape({
@@ -20,7 +20,6 @@ const InvitationModal = ({ isOpen, onClose, eventId }) => {
     if (token) {
       const decodedToken = jwtDecode(token);
       setToken(decodedToken);
-      console.log("docodedToken", decodedToken);
     }
   }, []);
 
@@ -42,6 +41,7 @@ const InvitationModal = ({ isOpen, onClose, eventId }) => {
       });
 
       onClose();
+      onInvitationSent();
     } catch (error) {
       Swal.fire({
         icon: "error",
