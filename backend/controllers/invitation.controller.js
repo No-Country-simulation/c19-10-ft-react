@@ -13,6 +13,22 @@ const createInvitation = async (req, res) => {
   }
 };
 
+const getInvitationsByEventId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const invitations = await INVITATION_SERVICE.getInvitationsByEventId(id);
+    if (!invitations) {
+      res
+        .status(404)
+        .json({ message: "We currently cannot find invitations." });
+    } else {
+      res.status(200).json({ invitations });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 const getInvitationById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,6 +88,7 @@ const deleteInvitation = async (req, res) => {
 module.exports = {
   createInvitation,
   getInvitationById,
+  getInvitationsByEventId,
   getInvitationsByUserId,
   updateInvitation,
   deleteInvitation,
