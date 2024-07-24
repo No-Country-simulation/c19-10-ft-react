@@ -1,64 +1,94 @@
-const { Invitation } = require('../models/invitation.model');
-const { v4: uuidv4 } = require('uuid');
+const { models } = require("../libs/sequelize");
+const { sendEmailFunction } = require("../nodemailer/sendEmail");
+const eventService = require("./event.service");
+const EVENT_SERVICE = new eventService();
+const { v4: uuidv4 } = require("uuid");
+require("dotenv").config();
+const { JWT_SECRET } = process.env;
+const jwt = require("jsonwebtoken");
 
-const createInvitation = async (data) => {
-    const { state, token, invitedEmail, userId, eventId } = data;
-    const invitation = await Invitation.create({
+class InvitationService {
+  constructor() {}
+
+  async createInvitation(invitationData) {
+    const { invitedEmail, userId, eventId } = invitationData;
+
+    try {
+      const newInvitation = await models.Invitation.create({
         id: uuidv4(),
-        state,
-        token,
         invitedEmail,
-        userId,
-        eventId,
         invitationDate: new Date(),
-        acceptationDate: null
-    });
-    return invitation;
-};
-
-const getAllInvitations = async () => {
-    const invitations = await Invitation.findAll();
-    return invitations;
-};
-
-const getInvitationById = async (id) => {
-    const invitation = await Invitation.findByPk(id);
-    if (!invitation) {
-        throw new Error('Invitation not found');
-    }
-    return invitation;
-};
-
-const updateInvitation = async (id, data) => {
-    const { state, token, invitedEmail, userId, eventId, acceptationDate } = data;
-    const invitation = await Invitation.findByPk(id);
-    if (!invitation) {
-        throw new Error('Invitation not found');
-    }
-    await invitation.update({
-        state,
-        token,
-        invitedEmail,
         userId,
         eventId,
-        acceptationDate
-    });
-    return invitation;
-};
-
-const deleteInvitation = async (id) => {
-    const invitation = await Invitation.findByPk(id);
-    if (!invitation) {
-        throw new Error('Invitation not found');
+      });
+      const eventData = await EVENT_SERVICE.findById(eventId);
+      const token = jwt.sign(
+        { invitationId: newInvitation.id, isInvitation: true, eventData },
+        JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+      const invitation_url = `http://localhost:3000?token=${token}`;
+      const emailOptions = {
+        subject: "Tienes una invitación a un evento - Celebria !",
+        text: `Has sido invitado al evento ${eventData.title}, puedes aceptar o rechazar la invitación ingresando al siguiente link: ${invitation_url}`,
+      };
+      await sendEmailFunction(
+        invitedEmail,
+        emailOptions.subject,
+        emailOptions.text
+      );
+      return newInvitation;
+    } catch (error) {
+      throw new Error(error.message);
     }
-    await invitation.destroy();
-    return { message: 'Invitation deleted successfully' };
-};
+  }
 
-module.exports = {
-    createInvitation,
-    getAllInvitations,
-    getInvitationById,
-    updateInvitation,
-    deleteInvitation
-};
+  async getInvitationById(id) {
+    try {
+      return await models.Invitation.findByPk(id);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Unable to get invitation");
+    }
+  }
+
+  async getInvitationsByUserId(userId) {
+    try {
+      return await models.Invitation.findAll({ where: { userId } });
+    } catch (error) {
+      console.error(error);
+      throw new Error("Unable to get invitations");
+    }
+  }
+
+  async updateInvitation(id, invitationData) {
+    try {
+      const invitation = await this.getInvitationById(id);
+      if (!invitation) {
+        throw new Error("Invitation not found");
+      }
+      return await invitation.update(invitationData);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Unable to update invitation");
+    }
+  }
+
+  async deleteInvitation(id) {
+    try {
+      const invitation = await this.getInvitationById(id);
+      if (!invitation) {
+        throw new Error("Invitation not found");
+      }
+      await invitation.destroy();
+      return { deleted: true };
+    } catch (error) {
+      console.error(error);
+      throw new Error("Unable to delete invitation");
+    }
+  }
+}
+
+module.exports = InvitationService;

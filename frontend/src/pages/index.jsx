@@ -2,12 +2,26 @@
 
 import Hero from "../components/Hero";
 import NavBar from "../components/NavBar";
+import InvitationRequestModal from "@/components/InvitationRequestModal";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function Landing() {
-	return (
-		<div>
-			<NavBar className="z-10" />
-			<Hero className="z-0" />
-		</div>
-	);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const { token } = router.query;
+
+  useEffect(() => {
+    if (token) {
+      openModal();
+    }
+  }, []);
+  const openModal = () => setIsModalOpen(true);
+  return (
+    <div>
+      <NavBar className="z-10" />
+      <InvitationRequestModal isOpen={isModalOpen} />
+      <Hero className="z-0" />
+    </div>
+  );
 }
