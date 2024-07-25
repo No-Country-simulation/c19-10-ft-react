@@ -6,9 +6,9 @@ import { jwtDecode } from "jwt-decode";
 const ResetPasswordPage = () => {
   const router = useRouter();
   const { token } = router.query;
-  const decoded = jwtDecode(token);
 
   const checkTokenExpiration = () => {
+    const decoded = jwtDecode(token);
     if (decoded.exp * 1000 < Date.now()) {
       return false;
     }
@@ -16,7 +16,7 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
-      {!token || !checkTokenExpiration() ? (
+      {!token || checkTokenExpiration() ? (
         <p className="text-red-500">
           El token de restablecimiento de contraseña es inválido.
         </p>

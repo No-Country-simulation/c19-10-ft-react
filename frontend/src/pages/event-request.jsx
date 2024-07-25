@@ -1,10 +1,25 @@
 import Image from "next/image";
 import BackgroundImage from "../../public/party.jpg";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Modal from "@/components/Modal";
+import { useRouter } from "next/router";
+import { jwtDecode } from "jwt-decode";
 
 const EventRequest = () => {
   const [isModalVisible, setModalVisible] = useState(true);
+  const [tokenData, setTokenData] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const { token } = router.query;
+  const decoded = jwtDecode(token);
+
+  useEffect(() => {
+    if (token) {
+      setIsOpen(true);
+      setTokenData(decoded);
+    }
+  }, []);
 
   const handleDecline = () => {
     setModalVisible(false);
@@ -20,7 +35,7 @@ const EventRequest = () => {
   return (
     <>
       {isModalVisible && (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="flex items-center justify-center  bg-gray-100 p-4">
           <div className="hero-content flex-col lg:flex-row-reverse bg-white p-6 rounded-lg shadow-lg max-w-4xl">
             <div className="flex justify-center lg:justify-start lg:w-1/2">
               <div className="max-w-md lg:max-w-full">
@@ -39,7 +54,7 @@ const EventRequest = () => {
                 Invitación!
               </h1>
               <p className="text-lg">
-                ¡Hola [Nombre]! Has sido invitado(a) a nuestro evento [Evento]
+                ¡Hola! Has sido invitado(a) a nuestro evento [Evento]
               </p>
               <p className="text-lg">
                 ¿Te gustaría formar parte de esta celebración?

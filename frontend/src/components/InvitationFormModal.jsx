@@ -8,14 +8,11 @@ import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
 
-const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
-
-const InvitationModal = ({ isOpen, onClose }) => {
-  const [eventDate, setEventDate] = useState(new Date());
+const InvitationModal = ({ isOpen, onClose, eventId, onInvitationSent }) => {
   const [token, setToken] = useState(null);
 
   const eventSchema = Yup.object().shape({
-    email: Yup.string().email().required("Campo requerido"),
+    invitedEmail: Yup.string().email().required("Campo requerido"),
   });
 
   useEffect(() => {
@@ -30,11 +27,11 @@ const InvitationModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // await axios.post("http://localhost:3001/api/v1/event/create", {
-      //   ...values,
-      //   date: eventDate,
-      //   userId: token?.id,
-      // });
+      await axios.post("http://localhost:3001/api/v1/invitation/create", {
+        ...values,
+        eventId,
+        userId: token?.id,
+      });
 
       Swal.fire({
         icon: "success",
@@ -44,6 +41,7 @@ const InvitationModal = ({ isOpen, onClose }) => {
       });
 
       onClose();
+      onInvitationSent();
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -58,7 +56,7 @@ const InvitationModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-full md:w-1/2">
         <div className="w-full flex justify-between">
           <h2 className="text-2xl mb-4">Enviar invitación</h2>
@@ -70,7 +68,7 @@ const InvitationModal = ({ isOpen, onClose }) => {
           </button>
         </div>
         <Formik
-          initialValues={{ email: "" }}
+          initialValues={{ invitedEmail: "" }}
           validationSchema={eventSchema}
           onSubmit={handleSubmit}
         >
@@ -82,13 +80,13 @@ const InvitationModal = ({ isOpen, onClose }) => {
                 </label>
                 <Field
                   placeholder="Email del invitado"
-                  id="email"
-                  name="email"
+                  id="invitedEmail"
+                  name="invitedEmail"
                   type="text"
                   className="input mt-1 block w-full h-12 border border-primary rounded-md shadow-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
                 />
                 <ErrorMessage
-                  name="email"
+                  name="invitedEmail"
                   component="div"
                   className="text-red-500 text-sm mt-1"
                 />
