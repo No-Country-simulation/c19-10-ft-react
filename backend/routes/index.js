@@ -6,7 +6,10 @@ const messageRouter = require("./message.router");
 const invitationRouter = require("./invitation.router");
 const postRouter = require("./post.router");
 const postImagesRouter = require("./postImages.router");
-const imageRouter = require("./image.router");
+const messageRouter = require("./message.router")
+const imageRouter = require("./image.router")
+const donationRouter = require("./donation.router")
+
 
 function routerApi(app) {
   const router = express.Router();
@@ -16,10 +19,10 @@ function routerApi(app) {
   router.use("/messages", messageRouter);
   router.use("/invitation", invitationRouter);
   router.use("/post", postRouter);
-
-  router.use("/images", postImagesRouter);
   router.use("/image", imageRouter);
   router.use("/post_images", postImagesRouter);
+  router.use("/donation", donationRouter);
+  router.use("/images", postImagesRouter);
 }
 
 module.exports = routerApi;

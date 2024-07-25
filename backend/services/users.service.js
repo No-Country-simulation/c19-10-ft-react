@@ -16,7 +16,7 @@ class UsersService {
 
     try {
       if (!validateUser) {
-        const user = models.User.create({
+        const user = await models.User.create({
           id: uuidv4(),
           name,
           email,

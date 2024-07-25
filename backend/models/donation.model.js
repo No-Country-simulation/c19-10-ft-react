@@ -35,7 +35,12 @@ const donationSchema = {
     description:{
         allowNull: true,
         type: DataTypes.TEXT,
-        field: "decription",
+        field: "description",
+    },
+    paymentStatus:{
+        type: DataTypes.ENUM("approved", "in_process", "failed"),
+        toDefaultValue: "in_process",
+        field: "payment_status",
     },
     date: {
         allowNull: false,
