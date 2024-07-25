@@ -1,21 +1,22 @@
+const { models } = require("../libs/sequelize")
 const { v4: uuidv4 } = require("uuid");
-const { models } = require("../libs/sequelize");
 
 class EventService {
   constructor() {}
 
-  async create(eventData) {
-    const { title, description, date, type, userId } = eventData;
-    const event = await models.Event.create({
-      id: uuidv4(),
-      title,
-      description,
-      date,
-      type,
-      userId,
-    });
-    return event;
-  }
+    async create(eventData) {
+
+        const { title, description, date, type, userId } = eventData;
+        const event = await models.Event.create({
+            id: uuidv4(),
+            title,
+            description,
+            date,
+            type,
+            userId
+        });
+        return event
+    }
 
   async findAll() {
     try {
