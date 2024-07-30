@@ -7,6 +7,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import Image from "next/image";
+import AddCommentForm from "@/components/AddCommentForm";
+import AddPostModal from "@/components/AddPostModal";
+import Sidebar from "@/components/UI/Sidebar";
 
 const sendDonationSchema = Yup.object().shape({
   title: Yup.string().required("El titulo es requerido."),
@@ -18,9 +22,21 @@ const sendDonationSchema = Yup.object().shape({
 
 const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isPostsModalOpen, setIsPostsModalOpen] = useState(false);
   const [selectedView, setSelectedView] = useState("invitations");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState();
+  const router = useRouter();
+  const { id } = router.query;
+  const [event, setEvent] = useState(null);
+  const [invitations, setInvitations] = useState([]);
+  const [posts, setPosts] = useState([]);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const openPostsModal = () => setIsPostsModalOpen(true);
+  const closePostsModal = () => setIsPostsModalOpen(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,14 +48,18 @@ const EventDetail = () => {
     }
   }, []);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const router = useRouter();
-  const { id } = router.query;
-  const [event, setEvent] = useState(null);
-  const [invitations, setInvitations] = useState([]);
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const getEventPosts = async (id) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/api/v1/post/all?id=${id}`
+      );
+      if (res) {
+        setPosts(res.data.allPosts);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const statusTranslation = {
     ACCEPTED: "Aceptado",
@@ -89,9 +109,25 @@ const EventDetail = () => {
     ),
   };
 
+  const updateComments = async (postId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/api/v1/comment/?id=${postId}`
+      );
+      const updatedComments = res.data;
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, comments: updatedComments } : post
+        )
+      );
+    } catch (error) {
+      console.error("Error actualizando los comentarios:", error);
+    }
+  };
+
   const getEventData = async (id) => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/event/${id}`);
+      const res = await axios.get(`http://localhost:3001/api/v1/event/${id}`);
       return res.data.eventById;
     } catch (error) {
       console.error("Error fetching event data:", error);
@@ -100,10 +136,18 @@ const EventDetail = () => {
 
   const getInvitationsList = async (id) => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/invitation/event/${id}`);
+      const res = await axios.get(
+        `http://localhost:3001/api/v1/invitation/event/${id}`
+      );
       return res.data.invitations;
     } catch (error) {
       console.error("Error fetching invitations list:", error);
+    }
+  };
+
+  const updatePosts = async () => {
+    if (id) {
+      await getEventPosts(id);
     }
   };
 
@@ -118,6 +162,7 @@ const EventDetail = () => {
     if (id) {
       getEventData(id).then((data) => setEvent(data));
       getInvitationsList(id).then((data) => setInvitations(data));
+      getEventPosts(id);
     }
   }, [id]);
 
@@ -126,7 +171,7 @@ const EventDetail = () => {
       case "invitations":
         return (
           <div className="overflow-x-auto w-full h-full text-black">
-            {invitations.length > 0 ? (
+            {invitations?.length > 0 ? (
               <table className="table">
                 <thead>
                   <tr>
@@ -276,8 +321,91 @@ const EventDetail = () => {
         );
       case "posts":
         return (
-          <div className="w-full h-full py-24 flex justify-center items-center">
-            <p className="text-primary font-semibold text-2xl"></p>
+          <div className="w-full h-full py-8 flex flex-col justify-center items-center min-h-[700px]">
+            <div className="w-full flex justify-end items-center mb-4">
+              <button
+                onClick={openPostsModal}
+                className="btn btn-sm text-white btn-primary"
+              >
+                Agregar post
+              </button>
+            </div>
+            <section className="w-full min-h-[600px] flex justify-center items-center">
+              {posts.length > 0 ? (
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  {posts?.map((post) => (
+                    <section
+                      key={post.id}
+                      className="border flex w-full max-w-3xl p-4 m-2 rounded-lg"
+                    >
+                      <div className="flex gap-2 w-full">
+                        <Image
+                          className="rounded-lg object-cover"
+                          src={post.imageUrl}
+                          width="400"
+                          height="300"
+                          alt="Post Image"
+                        />
+                        <section className="flex flex-col justify-start items-start w-full">
+                          <span className="pl-2 flex flex-col justify-start items-start gap-1 text-sm">
+                            <strong className="text-lg">
+                              {post.user?.name}
+                            </strong>
+                            {post.content}
+                          </span>
+                          {post.comments?.length > 0 ? (
+                            <ul className=" w-full ">
+                              <span className="text-xs pl-2 text-gray-400">
+                                Comentarios...
+                              </span>
+                              <div className="border-t mt-2 w-full max-h-[400px] overflow-y-auto">
+                                {post.comments.map((comment) => (
+                                  <li
+                                    className="pt-2 pl-2 w-full"
+                                    key={comment?.id}
+                                  >
+                                    <p className="font-semibold">
+                                      {comment?.user?.name}
+                                    </p>
+                                    <p className="text-sm">
+                                      {comment?.content}
+                                    </p>
+                                  </li>
+                                ))}
+                              </div>
+                              <section className="w-full border-t mt-2 pt-2">
+                                <AddCommentForm
+                                  postId={post.id}
+                                  updateComments={() => updateComments(post.id)}
+                                />
+                              </section>
+                            </ul>
+                          ) : (
+                            <div className="w-full ">
+                              <p className="pt-2 mt-2 pl-2 w-full font-semibold text-sm">
+                                Aún no hay comentarios
+                              </p>
+                              <section className="w-full border-t mt-2 pt-2">
+                                <AddCommentForm
+                                  postId={post.id}
+                                  updateComments={() => updateComments(post.id)}
+                                />
+                              </section>
+                            </div>
+                          )}
+                        </section>
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-full flex justify-center items-center">
+                  <p className="text-xl font-semibold text-primary">
+                    Aun no hay publicaciones, se el primero en publicar 📸
+                  </p>
+                </div>
+              )}
+            </section>
           </div>
         );
       default:
@@ -286,65 +414,77 @@ const EventDetail = () => {
   };
 
   return (
-    <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
-      <section className="w-full h-full flex items-center justify-between gap-2">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-5xl text-primary font-bold">{event?.title}</h1>
-          <p>{event?.description}</p>
-          <p>Fecha: {formatDate(event?.date)}</p>
-        </div>
-
-        <button
-          className="btn btn-md hover:bg-accent btn-primary text-white"
-          onClick={openModal}
-        >
-          Invitar
-        </button>
-      </section>
-      <section className="w-full h-full">
-        <div className="w-full h-full min-h-[700px]">
-          <div className="flex justify-around items-center font-semibold bg-primary text-white rounded-md overflow-hidden">
-            <button
-              className={
-                selectedView === "invitations"
-                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
-                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
-              }
-              onClick={() => setSelectedView("invitations")}
-            >
-              Invitados
-            </button>
-            <button
-              className={
-                selectedView === "gifts"
-                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
-                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
-              }
-              onClick={() => setSelectedView("gifts")}
-            >
-              Regalos
-            </button>
-            <button
-              className={
-                selectedView === "posts"
-                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
-                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
-              }
-              onClick={() => setSelectedView("posts")}
-            >
-              Posts
-            </button>
+    <section className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
+      {" "}
+      <Sidebar />
+      <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
+        <section className="w-full h-full flex items-center justify-between gap-2">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-5xl text-primary font-bold">{event?.title}</h1>
+            <p>{event?.description}</p>
+            <p className="text-sm">
+              Fecha del evento: {formatDate(event?.date)}
+            </p>
           </div>
-          {renderContent()}
-        </div>
-      </section>
-      <InvitationFormModal
-        eventId={id}
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        updateInvitations={updateInvitations}
-      />
-    </div>
+
+          <button
+            className="btn btn-md hover:bg-accent btn-primary text-white"
+            onClick={openModal}
+          >
+            Invitar
+          </button>
+        </section>
+        <section className="w-full h-full">
+          <div className="w-full h-full min-h-[700px]">
+            <div className="flex justify-around items-center font-semibold bg-primary text-white rounded-md overflow-hidden">
+              <button
+                className={
+                  selectedView === "invitations"
+                    ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                    : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+                }
+                onClick={() => setSelectedView("invitations")}
+              >
+                Invitados
+              </button>
+              <button
+                className={
+                  selectedView === "gifts"
+                    ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                    : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+                }
+                onClick={() => setSelectedView("gifts")}
+              >
+                Regalos
+              </button>
+              <button
+                className={
+                  selectedView === "posts"
+                    ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                    : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+                }
+                onClick={() => setSelectedView("posts")}
+              >
+                Posts
+              </button>
+            </div>
+            {renderContent()}
+          </div>
+        </section>
+        <InvitationFormModal
+          eventId={id}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          updateInvitations={updateInvitations}
+        />
+        <AddPostModal
+          eventId={id}
+          isOpen={isPostsModalOpen}
+          onClose={closePostsModal}
+          updatePosts={updatePosts}
+        />
+      </div>
+    </section>
   );
 };
 

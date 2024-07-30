@@ -1,0 +1,64 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            background-color: #F7F7F7;
+            background-image: url(../assets/party.jpg);
+            padding: 50px;
+        }
+
+        .container {
+            display: flex; 
+            flex-direction: column;
+        }
+        .encabezado {
+            display: flex; 
+            align-items: center;
+            padding-inline: 12px;
+        }
+        .titulo {
+            font-size: 50px;
+            color: #F33863
+        }
+        .subtitulo {
+            font-size: large;
+            font-weight: bold; 
+            color: #000000;
+            padding: 50px;
+        }
+       .parrafo {
+            color: #000000;
+            padding: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="encabezado">
+                <img src="../assets/Celebria-logo.webp" alt="logo celebria">
+                <h1 class="titulo">Hola {{name}}</h1>
+            </div>
+            <h2 >Bienvenido a nuestra plataforma!</h2>
+        </div>
+    </header>
+    <section>
+        <span class="subtitulo">Las mejores experiencias comienzan aqui!!</span>
+        <p class="parrafo">
+            Nuestro equipo esta emocionado por ver las primeras fotos de tus eventos
+            <br>
+            Muchas gracias por elegirnos!
+        </p>
+    </section>
+</body>
+
+</html>

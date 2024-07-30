@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import * as Yup from "yup";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -8,7 +7,7 @@ import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
 
-const InvitationModal = ({ isOpen, onClose, eventId, onInvitationSent }) => {
+const InvitationModal = ({ isOpen, onClose, eventId, updateInvitations }) => {
   const [token, setToken] = useState(null);
 
   const eventSchema = Yup.object().shape({
@@ -41,7 +40,7 @@ const InvitationModal = ({ isOpen, onClose, eventId, onInvitationSent }) => {
       });
 
       onClose();
-      onInvitationSent();
+      updateInvitations();
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -75,7 +74,10 @@ const InvitationModal = ({ isOpen, onClose, eventId, onInvitationSent }) => {
           {({ isSubmitting }) => (
             <Form>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="invitedEmail"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email
                 </label>
                 <Field
