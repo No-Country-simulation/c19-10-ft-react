@@ -18,7 +18,6 @@ class Message extends Model {
 const messageSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,

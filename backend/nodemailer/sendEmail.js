@@ -1,8 +1,9 @@
 const nodemailer = require("nodemailer")
 require("dotenv").config()
-const { User } = require("../models/initModels")
+const hbs = require("nodemailer-express-handlebars")
 
-const sendEmailFunction = (email, subject, text) => {
+
+const sendEmailFunction = ({ email, subject, template, context }) => {
 
     const transporter = nodemailer.createTransport({
 
@@ -15,11 +16,23 @@ const sendEmailFunction = (email, subject, text) => {
         },
     });
 
+    const handlebarOptions = {
+        viewEngine: {
+            defaultLayout: false
+        },
+        viewPath: "views",
+    }
+
+    transporter.use("compile", hbs(handlebarOptions))
+
     const message = {
         from: process.env.SMTP_USER,
         to: email, //se toma desde el modelo user
-        subject: subject, 
-        text: text,
+        subject: subject,
+        template: template,
+        context: {
+            name: context.name
+        }
     }
 
     return transporter.sendMail(message);
