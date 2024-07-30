@@ -49,7 +49,6 @@ const initModels = (sequelize) => {
     targetKey: "id",
   });
 
-  // Associations for Post
   Post.hasMany(Comment, { foreignKey: "postId", as: "comments" });
   Comment.belongsTo(Post, {
     foreignKey: "postId",

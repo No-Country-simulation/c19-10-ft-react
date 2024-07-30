@@ -22,11 +22,6 @@ const postSchema = {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
   },
-  title: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: "title",
-  },
   content: {
     allowNull: true,
     type: DataTypes.TEXT,

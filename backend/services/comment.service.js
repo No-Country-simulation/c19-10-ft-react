@@ -18,9 +18,18 @@ class CommentService {
     }
   }
 
-  async getCommentById(id) {
+  async getCommentByEvenId(id) {
     try {
-      return await models.Comment.findByPk(id);
+      return await models.Comment.findAll({
+        where: { postId: id },
+        include: [
+          {
+            model: models.User,
+            as: "user",
+            attributes: ["id", "name"],
+          },
+        ],
+      });
     } catch (error) {
       console.error(error);
     }

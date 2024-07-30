@@ -10,9 +10,9 @@ const sendComment = async (req, res) => {
   }
 };
 
-const getCommentById = async (req, res) => {
+const getCommentByEventId = async (req, res) => {
   try {
-    const comment = await COMMENT_SERVICE.getCommentById(req.params.id);
+    const comment = await COMMENT_SERVICE.getCommentByEvenId(req.query.id);
     if (comment) {
       res.json(comment);
     } else {
@@ -65,7 +65,7 @@ const deleteComment = async (req, res) => {
 
 module.exports = {
   sendComment,
-  getCommentById,
+  getCommentByEventId,
   getCommentsByUserId,
   updateComment,
   deleteComment,
