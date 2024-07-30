@@ -42,6 +42,11 @@ const userSchema = {
     defaultValue: "user",
     type: DataTypes.ENUM("user", "admin", "superAdmin"),
   },
+  userPlan: {
+    allowNull: false, 
+    defaultValue: "free",
+    type: DataTypes.ENUM("free", "basic", "premium"),
+  }
 };
 
 module.exports = {

@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const { sendEmailFunction } = require("../nodemailer/sendEmail");
 const { v4: uuidv4 } = require("uuid");
 
+
 class UsersService {
   constructor() {}
 
@@ -11,9 +12,16 @@ class UsersService {
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
-    const subject = "Welcome to Celebria.";
-    const text = `Hello, ${name}, \n\Welcome to our platform! We invite you to create your first event. \n\Our team is excited to see those videos and photos\n\nThank you for joining us! `;
-
+  
+    const mailObject = {
+      email: email, 
+      subject: "Welcome to Celebria.",
+      template: "LogInMessage",
+      context: {
+        name: name,
+      }
+    }
+   
     try {
       if (!validateUser) {
         const user = await models.User.create({
@@ -22,7 +30,7 @@ class UsersService {
           email,
           password: hashedPassword,
         });
-        await sendEmailFunction(email, subject, text);
+        await sendEmailFunction(mailObject);
         return user;
       }
     } catch (error) {
@@ -32,9 +40,17 @@ class UsersService {
 
   async updatePassword(email, url) {
     try {
-      const subject = "Celebria's Team: Reset password";
-      const text = `Aca va el Link del recupero \n\ ${url}`;
-      if (email) await sendEmailFunction(email, subject, text);
+
+      const mailObject = {
+        email: email, 
+        subject: "Celebria's Team: Reset password",
+        template: "LogInMessage",
+        context: {
+          name: "",
+          url: url
+        }
+      }
+      if (email) await sendEmailFunction(mailObject);
     } catch (error) {
       console.log(error);
     }
@@ -48,11 +64,15 @@ class UsersService {
         { password: hashedPassword },
         { where: { email } }
       );
-      const options = {
-        subject: "Contraseña resstablecida con exito",
-        text: "Su contraseña ha sido restablecida con exito, por favor intente ingresar a la plataforma con sus nuevas credenciales",
-      };
-      await sendEmailFunction(email, options.subject, options.text);
+
+      const mailObject = {
+        email: email, 
+        subject: "Contraseña restablecida con exito",
+        template: "ResetPassword",
+        context: { }
+      }
+
+      await sendEmailFunction(mailObject);
 
       if (result[0] === 0) {
         console.log("Usuario no encontrado o contraseña no actualizada");
