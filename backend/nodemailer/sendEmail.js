@@ -31,7 +31,8 @@ const sendEmailFunction = ({ email, subject, template, context }) => {
         subject: subject,
         template: template,
         context: {
-            name: context.name
+            name: context.name,
+            url: context.url
         }
     }
 

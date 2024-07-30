@@ -40,9 +40,17 @@ class UsersService {
 
   async updatePassword(email, url) {
     try {
-      const subject = "Celebria's Team: Reset password";
-      const text = `Aca va el Link del recupero \n\ ${url}`;
-      if (email) await sendEmailFunction(email, subject, text);
+
+      const mailObject = {
+        email: email, 
+        subject: "Celebria's Team: Reset password",
+        template: "LogInMessage",
+        context: {
+          name: "",
+          url: url
+        }
+      }
+      if (email) await sendEmailFunction(mailObject);
     } catch (error) {
       console.log(error);
     }
@@ -56,11 +64,15 @@ class UsersService {
         { password: hashedPassword },
         { where: { email } }
       );
-      const options = {
-        subject: "Contraseña resstablecida con exito",
-        text: "Su contraseña ha sido restablecida con exito, por favor intente ingresar a la plataforma con sus nuevas credenciales",
-      };
-      await sendEmailFunction(email, options.subject, options.text);
+
+      const mailObject = {
+        email: email, 
+        subject: "Contraseña restablecida con exito",
+        template: "ResetPassword",
+        context: { }
+      }
+
+      await sendEmailFunction(mailObject);
 
       if (result[0] === 0) {
         console.log("Usuario no encontrado o contraseña no actualizada");
