@@ -3,9 +3,34 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import formatDate from "@/utils/formatDate";
 import InvitationFormModal from "@/components/InvitationFormModal";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
+
+const sendDonationSchema = Yup.object().shape({
+  title: Yup.string().required("El titulo es requerido."),
+  description: Yup.string().required("La descripción es requerida."),
+  amount: Yup.number()
+    .min(1, "El monto debe ser mayor a 1")
+    .required("El monto es requerido."),
+});
 
 const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedView, setSelectedView] = useState("invitations");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      const data = jwtDecode(token);
+      setUser(data);
+    }
+  }, []);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -96,36 +121,10 @@ const EventDetail = () => {
     }
   }, [id]);
 
-  return (
-    <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
-      <section className="w-full h-full flex items-center justify-between gap-2">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-5xl text-primary font-bold">{event?.title}</h1>
-          <p>{event?.description}</p>
-          <p>Fecha: {formatDate(event?.date)}</p>
-        </div>
-
-        <button
-          className="btn btn-md hover:bg-accent btn-primary text-white"
-          onClick={openModal}
-        >
-          Invitar
-        </button>
-      </section>
-      <section className="w-full h-full">
-        <div className="w-full h-full min-h-[700px]">
-          <div className="flex justify-around items-center font-semibold bg-primary text-white rounded-md overflow-hidden">
-            <p className="text-center hover:bg-accent hover:text-background w-full h-full py-2 cursor-pointer">
-              Invitados
-            </p>
-            <p className="text-center hover:bg-accent hover:text-background w-full h-full py-2 cursor-pointer">
-              Regalos
-            </p>
-            <p className="text-center hover:bg-accent hover:text-background w-full h-full py-2 cursor-pointer">
-              Posts
-            </p>
-          </div>
-
+  const renderContent = () => {
+    switch (selectedView) {
+      case "invitations":
+        return (
           <div className="overflow-x-auto w-full h-full text-black">
             {invitations.length > 0 ? (
               <table className="table">
@@ -155,19 +154,196 @@ const EventDetail = () => {
               <div className="w-full h-full py-24 flex justify-center items-center">
                 <p className="text-primary font-semibold text-2xl">
                   Aun no has invitado a nadie, prueba invitando a alguien a tu
-                  evento :)
+                  evento 🕺🏼💃🏼
                 </p>
               </div>
             )}
           </div>
+        );
+      case "gifts":
+        return (
+          <div className="w-full h-full py-24 flex flex-col justify-center items-center gap-4">
+            <p className="text-primary font-semibold text-xl">
+              Enviale un regalito monetario al organizador del evento 😉💸
+            </p>
+            <Formik
+              initialValues={{ title: "", amount: 0, description: "" }}
+              validationSchema={sendDonationSchema}
+              onSubmit={async (values, { resetForm }) => {
+                setIsSubmitting(true);
+                try {
+                  const date = new Date();
+
+                  const donation = await axios.post(
+                    "http://localhost:3001/api/v1/donation/create",
+                    { ...values, date, eventId: id, userId: user?.id }
+                  );
+
+                  const { init_point } = donation.data;
+
+                  Swal.fire({
+                    icon: "success",
+                    title:
+                      "Donación realizada con exito, gracias por colaborar con este evento !",
+                    timer: 1500,
+                  });
+                  if (init_point) {
+                    window.open(init_point, "_blank");
+                  }
+                } catch (error) {
+                  console.error("Error al realizar donación:", error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Ocurrió un error al intentar realizar la donación.",
+                    timer: 1500,
+                  });
+                } finally {
+                  setIsSubmitting(false);
+                  resetForm();
+                }
+              }}
+            >
+              {() => (
+                <Form className="w-full max-w-xl">
+                  <div className="mb-6">
+                    <label
+                      htmlFor="title"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Titulo
+                    </label>
+                    <Field
+                      type="text"
+                      id="title"
+                      name="title"
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm bg-white border-grey border-2 py-2 px-3"
+                    />
+                    <ErrorMessage
+                      name="title"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <label
+                      htmlFor="description"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Descripción
+                    </label>
+                    <Field
+                      type="textarea"
+                      id="description"
+                      name="description"
+                      className="input textarea mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm bg-white border-grey border-2 py-2 px-3"
+                    />
+                    <ErrorMessage
+                      name="description"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <label
+                      htmlFor="amount"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Monto
+                    </label>
+                    <Field
+                      type="number"
+                      id="amount"
+                      name="amount"
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm bg-white border-grey border-2 py-2 px-3"
+                    />
+                    <ErrorMessage
+                      name="amount"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Enviando donación..." : "Donar"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        );
+      case "posts":
+        return (
+          <div className="w-full h-full py-24 flex justify-center items-center">
+            <p className="text-primary font-semibold text-2xl"></p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
+      <section className="w-full h-full flex items-center justify-between gap-2">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-5xl text-primary font-bold">{event?.title}</h1>
+          <p>{event?.description}</p>
+          <p>Fecha: {formatDate(event?.date)}</p>
         </div>
-        <InvitationFormModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          eventId={id}
-          onInvitationSent={updateInvitations}
-        />
+
+        <button
+          className="btn btn-md hover:bg-accent btn-primary text-white"
+          onClick={openModal}
+        >
+          Invitar
+        </button>
       </section>
+      <section className="w-full h-full">
+        <div className="w-full h-full min-h-[700px]">
+          <div className="flex justify-around items-center font-semibold bg-primary text-white rounded-md overflow-hidden">
+            <button
+              className={
+                selectedView === "invitations"
+                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+              }
+              onClick={() => setSelectedView("invitations")}
+            >
+              Invitados
+            </button>
+            <button
+              className={
+                selectedView === "gifts"
+                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+              }
+              onClick={() => setSelectedView("gifts")}
+            >
+              Regalos
+            </button>
+            <button
+              className={
+                selectedView === "posts"
+                  ? "text-center bg-primary hover:text-background w-full h-full py-2 cursor-pointer"
+                  : "text-center bg-accent hover:text-background w-full h-full py-2 cursor-pointer"
+              }
+              onClick={() => setSelectedView("posts")}
+            >
+              Posts
+            </button>
+          </div>
+          {renderContent()}
+        </div>
+      </section>
+      <InvitationFormModal
+        eventId={id}
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        updateInvitations={updateInvitations}
+      />
     </div>
   );
 };

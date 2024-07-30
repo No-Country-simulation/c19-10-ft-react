@@ -9,7 +9,7 @@ const {
   NODE_ENV,
   PORT,
   MP_TOKEN,
-  HOST
+  HOST,
 } = process.env;
 
 const config = {
@@ -21,7 +21,7 @@ const config = {
   port: PORT || 3000,
   env: NODE_ENV || "env",
   mpToken: MP_TOKEN,
-  host: HOST
+  host: HOST,
 };
 
 module.exports = { config };
@@ -29,4 +29,3 @@ module.exports = { config };
 // la forma: module.export = config; 🧬 Esto causaría conflictos en las configuraciones de src/payments/mercadopago.config.js
 // donde está siendo desestructurado nuevamente.
 // Solución, importar en esa línea como -> const config = require('...') en lugar de const { config } = require('...');
-
