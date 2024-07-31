@@ -16,7 +16,9 @@ const NavBar = () => {
     <nav className="bg-white drop-shadow-sm relative py-4 z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <div className="flex items-center">
+          <Link href="/" passHref>
           <Image src={Logo} width={120} height={50} alt="CelebriaLogo" />
+          </Link>
         </div>
         {/* Menú */}
         <div className="flex">

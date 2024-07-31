@@ -11,7 +11,8 @@ const sequelize = new Sequelize(
     host: config.dbHost,
     dialect: "postgresql",
     logging: false,
-  }
+  },
+  
 );
 setupModels(sequelize);
 sequelize.sync();
