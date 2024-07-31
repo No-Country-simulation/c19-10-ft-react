@@ -61,6 +61,14 @@ const EventDetail = () => {
     }
   };
 
+  const checkStr = (str) => {
+    if (str) {
+      const isSplitted = str.split(" ");
+      const simpleWord = isSplitted.length === 1;
+      return simpleWord;
+    }
+  };
+
   const statusTranslation = {
     ACCEPTED: "Aceptado",
     REJECTED: "Rechazado",
@@ -321,8 +329,8 @@ const EventDetail = () => {
         );
       case "posts":
         return (
-          <div className="w-full h-full py-8 flex flex-col justify-center items-center min-h-[700px]">
-            <div className="w-full flex justify-end items-center mb-4">
+          <div className="w-full h-full  flex flex-col justify-center items-center min-h-[700px]">
+            <div className="w-full flex justify-end items-center mt-8 mb-2">
               <button
                 onClick={openPostsModal}
                 className="btn btn-sm text-white btn-primary"
@@ -338,9 +346,9 @@ const EventDetail = () => {
                       key={post.id}
                       className="border flex w-full max-w-3xl p-4 m-2 rounded-lg"
                     >
-                      <div className="flex gap-2 w-full">
+                      <div className="flex gap-2 w-full min-h-[590px]">
                         <Image
-                          className="rounded-lg object-cover"
+                          className="rounded-lg object-cover "
                           src={post.imageUrl}
                           width="400"
                           height="300"
@@ -367,7 +375,13 @@ const EventDetail = () => {
                                     <p className="font-semibold">
                                       {comment?.user?.name}
                                     </p>
-                                    <p className="text-sm">
+                                    <p
+                                      className={
+                                        checkStr(comment.content)
+                                          ? "text-sm max-w-[25ch] truncate"
+                                          : "text-sm max-w-[25ch]"
+                                      }
+                                    >
                                       {comment?.content}
                                     </p>
                                   </li>
@@ -414,8 +428,7 @@ const EventDetail = () => {
   };
 
   return (
-    <section className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
-      {" "}
+    <section className="flex flex-col sm:flex-row  justify-center items-center w-full bg-white">
       <Sidebar />
       <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
         <section className="w-full h-full flex items-center justify-between gap-2">

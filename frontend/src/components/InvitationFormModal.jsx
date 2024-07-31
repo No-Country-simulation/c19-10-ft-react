@@ -96,18 +96,19 @@ const InvitationModal = ({ isOpen, onClose, eventId, updateInvitations }) => {
 
               <div className="flex justify-end">
                 <button
+                  disabled={isSubmitting}
                   type="button"
                   onClick={onClose}
-                  className="bg-background text-gray-500 border border-primary px-4 py-2 rounded-md"
+                  className="btn bg-background text-gray-500 border border-primary px-4 py-2 rounded-md"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary text-white px-4 py-2 ml-4 rounded-md"
+                  className="btn btn-primary text-white px-4 py-2 ml-4 rounded-md"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Cargando..." : "Guardar"}
+                  {isSubmitting ? "Invitando..." : "Invitar"}
                 </button>
               </div>
             </Form>

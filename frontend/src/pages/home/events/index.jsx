@@ -6,26 +6,41 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import NewEventBackground from "../../../../public/new-event.webp";
 import formatDate from "@/utils/formatDate";
+import { jwtDecode } from "jwt-decode";
 
 const Events = () => {
   const router = useRouter();
 
   const [events, setEvents] = useState([]);
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 3;
   const totalItems = events?.length || 6;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [currentPage, setCurrentPage] = useState(0);
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    getEvents();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      const data = jwtDecode(token);
+      setUser(data);
+    }
   }, []);
 
-  const getEvents = async () => {
+  useEffect(() => {
+    if (user) {
+      getEvents(user.id);
+    }
+  }, [user]);
+
+  const getEvents = async (userId) => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3001/api/v1/event/all"
+        `http://localhost:3001/api/v1/event/all?id=${userId}`
       );
+      console.log(data.allEvents);
       setEvents(data.allEvents);
     } catch (error) {
       console.error(error);
@@ -54,12 +69,17 @@ const Events = () => {
 
   const startIdx = currentPage * itemsPerPage;
   const endIdx = startIdx + itemsPerPage;
-  const currentItems = events?.slice(startIdx, endIdx);
-
+  const currentItems = [
+    (events?.createdEvents || []).slice(startIdx, endIdx),
+    (events?.invitedEvents || []).slice(startIdx, endIdx),
+  ];
+  console.log(currentItems);
   return (
     <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
       <Sidebar />
-      {!events || events?.length === 0 ? (
+      {(!events.createdEvents && !events.invitedEvents) ||
+      (events.createdEvents?.length === 0 &&
+        events.invitedEvents.length === 0) ? (
         <section className="w-full h-screen flex flex-col justify-center items-center">
           <div className="w-full h-full flex flex-col justify-center items-center px-2 md:px-0">
             <svg
@@ -119,32 +139,68 @@ const Events = () => {
               Volver
             </button>
           </div>
-          <div className="w-full h-full py-12 md:py-16 md:px-52">
+          <div className="w-full h-full py-8 md:py-16 md:px-52">
             <h2 className="md:text-5xl  px-8 md:px-12 font-bold text-primary mb-4 ">
               Tús eventos
             </h2>
-            <div className="relative overflow-hidden w-full h-full  flex items-start justify-center md:items-center">
+            <div className="relative overflow-hidden w-full h-full  flex flex-col gap-4 items-start justify-center md:items-center">
               <div className="px-8 md:px-12 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {currentItems?.map((item, index) => (
-                  <div
-                    onClick={() => goToEventDetail(item.id)}
-                    key={index}
-                    className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
-                  >
-                    <Image
-                      src={NewEventBackground}
-                      width="full"
-                      height="full"
-                      className="rounded-md"
-                    />
-                    <h2 className=" sm:text-2xl mt-2 font-bold">
-                      {item?.title}
+                {currentItems[0]?.map((item) => (
+                  <section className="w-full flex flex-col gap-2" key={item.id}>
+                    <h2 className="font-semibold text-xl">
+                      Eventos que estas organizando
                     </h2>
-                    <p className=" text-sm ">{item?.description}</p>
-                    <p className="text-sm font-semibold mt-6">
-                      Fecha: {formatDate(item?.date)}
-                    </p>
-                  </div>
+                    <div
+                      onClick={() => goToEventDetail(item.id)}
+                      className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
+                    >
+                      <Image
+                        src={NewEventBackground}
+                        width="full"
+                        height="full"
+                        className="rounded-md"
+                        alt="bg-img"
+                      />
+                      <h2 className=" sm:text-2xl mt-2 font-bold">
+                        {item?.title}
+                      </h2>
+                      <p className=" text-sm ">{item?.description}</p>
+                      <p className="text-sm font-semibold mt-6">
+                        Fecha: {formatDate(item?.date)}
+                      </p>
+                    </div>
+                  </section>
+                ))}
+              </div>
+              <div className="px-8 md:px-12 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {currentItems[1]?.map((item) => (
+                  <section className="w-full flex flex-col gap-2" key={item.id}>
+                    <h2 className="font-semibold text-xl">
+                      Eventos a los que has sido invitado/a
+                    </h2>
+                    <div
+                      onClick={() => goToEventDetail(item.id)}
+                      className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
+                    >
+                      <Image
+                        src={NewEventBackground}
+                        width="full"
+                        height="full"
+                        className="rounded-md"
+                        alt="bg-img"
+                      />
+                      <h2 className=" sm:text-2xl mt-2 font-bold">
+                        {item?.invitations[0]?.event.title}
+                      </h2>
+                      <p className=" text-sm ">
+                        {" "}
+                        {item?.invitations[0]?.event.description}
+                      </p>
+                      <p className="text-sm font-semibold mt-6">
+                        Fecha: {formatDate(item?.invitations[0]?.event.date)}
+                      </p>
+                    </div>
+                  </section>
                 ))}
               </div>
               <button
