@@ -30,7 +30,6 @@ const get = async (req, res) => {
   const { id } = req.query;
   try {
     const allEvents = await eventService.findAll(id);
-    console.log("allevents ---->", allEvents);
     res
       .status(200)
       .json({ message: "These are the total events", allEvents: allEvents });
