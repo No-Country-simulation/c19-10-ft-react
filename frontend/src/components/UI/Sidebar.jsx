@@ -3,10 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
 import CLogo from "../../../public/C-logo.svg";
 import ProfileLogo from "../../../public/profile-logo.svg";
-// import NotificationsLogo from "../../../public/notifications-logo.svg";
-// import CalendarLogo from "../../../public/calendar-logo.svg";
-// import InvitationLogo from "../../../public/invitation-logo.svg";
-// import SettingsLogo from "../../../public/settings-logo.svg";
+
 import MenuOption from "./SidebarMenuOption";
 import UserPerfil from "../UserPerfil";
 import PlansModal from "../PlansModal";
@@ -15,6 +12,15 @@ const Sidebar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -82,22 +88,6 @@ const Sidebar = () => {
               onClick={handleProfileClick}
             />
           )}
-          {/* Descomentar para funcionalidad futura */}
-          {/* <MenuOption
-            logo={NotificationsLogo}
-            alt={"notifications-logo"}
-            label={"Avisos"}
-          />
-          <MenuOption
-            logo={CalendarLogo}
-            alt={"calendar-logo"}
-            label={"Calendario"}
-          />
-          <MenuOption
-            logo={InvitationLogo}
-            alt={"invitation-logo"}
-            label={"Invitaciones"}
-          /> */}
         </div>
 
         <section className="hidden sm:flex flex-col gap-4">
@@ -107,22 +97,6 @@ const Sidebar = () => {
             label={"Perfil"}
             onClick={handleProfileClick}
           />
-          {/* Descomentar para funcionalidad futura */}
-          {/* <MenuOption
-            logo={NotificationsLogo}
-            alt={"notifications-logo"}
-            label={"Avisos"}
-          />
-          <MenuOption
-            logo={CalendarLogo}
-            alt={"calendar-logo"}
-            label={"Calendario"}
-          />
-          <MenuOption
-            logo={InvitationLogo}
-            alt={"invitation-logo"}
-            label={"Invitaciones"}
-          /> */}
         </section>
       </aside>
       <UserPerfil
@@ -130,7 +104,7 @@ const Sidebar = () => {
         isOpen={isProfileOpen}
         onClose={handleCloseProfile}
       />
-      <PlansModal />
+      <PlansModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };
