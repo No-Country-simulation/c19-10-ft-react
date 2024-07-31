@@ -70,11 +70,12 @@ const Home = () => {
           </section>
           <section className="w-full h-full flex flex-col justify-center items-center">
             <div className="w-full">
-              <h2 className="text-3xl text-primary font-semibold">
+              <span className="text-xs ">Proximamente</span>
+              <h2 className="text-3xl text-primary font-semibold opacity-25">
                 Eventos disponibles
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 my-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 my-4 opacity-25">
               <HomeCard image={LunchEvent} size={1} title={"Almuerzo"} />
               <HomeCard image={SunsetEvent} size={1} title={"Dj Party"} />
               <HomeCard

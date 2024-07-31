@@ -1,13 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-// const HomeCard = ({ image, size, title, path }) => {
-//   const router = useRouter();
-
-//   const navigateTo = (path) => {
-//     router.push(path);
-//   };
-
 const HomeCard = ({ image, size, title, path, onClick }) => {
   const router = useRouter();
 
@@ -16,7 +9,11 @@ const HomeCard = ({ image, size, title, path, onClick }) => {
   };
   return (
     <div
-      className={`relative cursor-pointer overflow-hidden shadow-lg rounded-lg col-span-${size}`}
+      className={
+        path || onClick
+          ? `cursor-pointer relative overflow-hidden shadow-lg rounded-lg col-span-${size}`
+          : `relative overflow-hidden shadow-lg rounded-lg col-span-${size}`
+      }
       onClick={path ? () => navigateTo(path) : onClick}
     >
       <Image
