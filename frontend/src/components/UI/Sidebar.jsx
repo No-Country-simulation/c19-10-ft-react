@@ -9,6 +9,7 @@ import ProfileLogo from "../../../public/profile-logo.svg";
 // import SettingsLogo from "../../../public/settings-logo.svg";
 import MenuOption from "./SidebarMenuOption";
 import UserPerfil from "../UserPerfil";
+import PlansModal from "../PlansModal";
 
 const Sidebar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -129,6 +130,7 @@ const Sidebar = () => {
         isOpen={isProfileOpen}
         onClose={handleCloseProfile}
       />
+      <PlansModal />
     </>
   );
 };
