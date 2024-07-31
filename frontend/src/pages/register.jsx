@@ -32,24 +32,12 @@ const LoginPage = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Contenedor*/}
       <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center">
-        {/* Logo*/}
         <div>
           <Image src={Logo} alt="Celebria Logo" width={120} height={50} />
         </div>
-        {/*esquina superior derecha */}
-        {/* <div className="flex items-center">
-          <p className="text-23 font-bold text-white mr-2">
-            ¿No te has registrado?
-          </p>
-          <button className="bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 font-bold text-base">
-            Registrarse
-          </button>
-        </div> */}
       </div>
 
-      {/* Contenedor */}
       <div className="max-w-sm w-full p-6 bg-white rounded-lg shadow-md mt-10">
         <h1 className="text-2xl text-black mb-6">Registrarse</h1>
         <Formik
@@ -57,12 +45,11 @@ const LoginPage = () => {
           validationSchema={LoginSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              console.log("Valores del formulario:", values);
               await axios.post(
                 "http://localhost:3001/api/v1/users/register",
                 values
               );
-              router.push("/home");
+              router.push("/login");
             } catch (error) {
               console.error("Error al registrarse:", error);
             } finally {
