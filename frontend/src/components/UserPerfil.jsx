@@ -3,7 +3,7 @@ import Image from "next/image";
 import UserSettings from "../components/UserSettings";
 import SettingsLogo from "../../public/settings-logo.svg";
 
-const UserPerfil = ({ isOpen, onClose, user }) => {
+const UserPerfil = ({ isOpen, onClose, user, updateUserData }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleSettingsClick = () => {
@@ -13,6 +13,10 @@ const UserPerfil = ({ isOpen, onClose, user }) => {
   const handleCloseSettings = () => {
     setIsSettingsOpen(false);
     onClose();
+  };
+
+  const handleUpdateUserData = () => {
+    updateUserData();
   };
 
   if (!isOpen) return null;
@@ -54,6 +58,7 @@ const UserPerfil = ({ isOpen, onClose, user }) => {
         </div>
       </div>
       <UserSettings
+        updateUserData={handleUpdateUserData}
         user={user}
         isOpen={isSettingsOpen}
         onClose={handleCloseSettings}

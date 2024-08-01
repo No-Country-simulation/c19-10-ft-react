@@ -8,6 +8,7 @@ import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
 import Link from "next/link";
 import Swal from "sweetalert2";
+const API_URL = process.env.API_BASE_URL;
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -56,10 +57,7 @@ const ForgotPasswordPage = () => {
           onSubmit={async (values) => {
             setIsSubmitting(true);
             try {
-              await axios.post(
-                "http://localhost:3001/api/v1/users/forgot-password",
-                values
-              );
+              await axios.post(`${API_URL}/users/forgot-password`, values);
               Swal.fire({
                 icon: "success",
                 title:

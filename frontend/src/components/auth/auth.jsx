@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = "http://localhost:3001/api/v1";
+const API_URL = process.env.API_BASE_URL;
 
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
@@ -11,7 +11,6 @@ export const refreshToken = async () => {
       refreshToken,
     });
     const { accessToken, refreshToken: newRefreshToken } = response.data;
-
     localStorage.setItem("token", accessToken);
     localStorage.setItem("refreshToken", newRefreshToken);
 
@@ -45,3 +44,5 @@ export const checkTokenExpiration = async () => {
     return false;
   }
 };
+
+export default refreshToken;

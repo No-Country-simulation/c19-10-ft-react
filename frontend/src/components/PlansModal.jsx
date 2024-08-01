@@ -1,10 +1,41 @@
-const PlansModal = ({ isOpen, onClose }) => {
+import Swal from "sweetalert2";
+import axios from "axios";
+const API_URL = process.env.API_BASE_URL;
+
+const PlansModal = ({ isOpen, onClose, user, handleUpdateUser }) => {
   if (!isOpen) return null;
+
+  const handleSelectPlan = async () => {
+    try {
+      const premium_pay = await axios.post(`${API_URL}/donation/subscribe`, {
+        userId: user?.id,
+      });
+      const { init_point } = premium_pay.data;
+
+      if (init_point) {
+        window.open(init_point, "_blank");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      Swal.fire({
+        title: "Plan actualizado",
+        text: "Tu plan ha sido actualizado exitosamente.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await handleUpdateUser();
+          onClose();
+        }
+      });
+    }
+  };
 
   const Icons = {
     checkIcon: (
       <svg
-        className="flex-shrink-0 w-5 h-5 text-green-500"
+        className="flex-shrink-0 w-5 h-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -53,114 +84,111 @@ const PlansModal = ({ isOpen, onClose }) => {
             </p>
           </div>
           <div className="flex justify-center space-x-9">
-            <div className="bg-primary-600 flex flex-col p-6 max-w-lg text-center text-gray-900 bg-primary rounded-lg border border-gray-100 shadow-xl p-8 transition-transform duration-300 hover:scale-105">
+            <div className="bg-primary-600 flex flex-col justify-between items-center max-w-lg text-center text-gray-900 bg-primary rounded-lg border border-gray-100 shadow-xl p-8 opacity-75">
               <h3 className="text-white mb-4 text-2xl font-semibold">Free</h3>
               <p className="font-light text-gray-100 sm:text-lg">
-                Best option for personal use & for your next project.
+                La mejor opción para uso personal y eventos pequeños.
               </p>
               <div className="flex justify-center items-baseline my-8">
                 <span className="mr-2 text-5xl font-extrabold text-white">
-                  $0
+                  $ 0 ars
                 </span>
-                <span className="text-gray-100">/month</span>
+                <span className="text-gray-100">/mes.</span>
               </div>
-              <ul role="list" className="mb-8 space-y-4 text-left">
-                <li className="flex items-center space-x-3">
+              <ul role="list" className="mb-8 space-y-4 text-left w-full">
+                <li className="flex items-center space-x-3 text-green-500">
                   {Icons.checkIcon}
                   <span className="text-gray-100">
-                    Individual configuration
+                    Configuración individual
                   </span>
                 </li>
-                <li className="flex items-center space-x-3">
+                <li className="flex items-center space-x-3  text-green-500">
+                  {Icons.checkIcon}
+                  <span className="text-gray-100">Sin tarifas ocultas</span>
+                </li>
+
+                <li className="flex items-center space-x-3 text-white">
                   {Icons.checkIcon}
                   <span className="text-gray-100">
-                    No setup, or hidden fees
+                    Soporte premium:
+                    <span className="font-semibold"> 6 meses</span>
                   </span>
                 </li>
-                <li className="flex items-center space-x-3">
+                <li className="flex items-center space-x-3 text-white">
                   {Icons.checkIcon}
                   <span className="text-gray-100">
-                    Team size:{" "}
-                    <span className="font-semibold">1 developer</span>
-                  </span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  {Icons.checkIcon}
-                  <span className="text-gray-100">
-                    Premium support:{" "}
-                    <span className="font-semibold">6 months</span>
-                  </span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  {Icons.checkIcon}
-                  <span className="text-gray-100">
-                    Free updates:{" "}
-                    <span className="font-semibold">6 months</span>
+                    Posts:
+                    <span className="font-semibold">
+                      {" "}
+                      Cada usuario puede realizar hasta 3 post por cada evento.
+                    </span>
                   </span>
                 </li>
               </ul>
-              <a
-                href="#"
-                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Get started
-              </a>
+              <span className=" cursor-default text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                {user?.userPlan === "free"
+                  ? "Plan actual"
+                  : "Ya posees el plan premium"}
+              </span>
             </div>
 
-            <div className="bg-primary-600 flex flex-col p-6 max-w-lg text-center text-gray-900 bg-primary rounded-lg border border-gray-100 shadow-xl p-8 transition-transform duration-300 hover:scale-105">
+            <div
+              className="bg-primary-600 flex flex-col justify-between
+             max-w-lg text-center text-gray-900 bg-primary rounded-lg border border-gray-100 shadow-xl p-8 transition-transform duration-300 hover:scale-105"
+            >
               <h3 className="text-white mb-4 text-2xl font-semibold">
                 Premium
               </h3>
               <p className="font-light text-gray-100 sm:text-lg">
-                For larger companies & organizations with specific needs.
+                La mejor opción para grandes eventos, con necesidades
+                especificas !
               </p>
               <div className="flex justify-center items-baseline my-8">
                 <span className="mr-2 text-5xl font-extrabold text-white">
-                  $499
+                  $ 1500 ars
                 </span>
-                <span className="text-gray-100">/month</span>
+                <span className="text-gray-100">/mes.</span>
               </div>
-              <ul role="list" className="mb-8 space-y-4 text-left">
+              <ul
+                role="list"
+                className="mb-8 space-y-4 text-left w-full text-green-500"
+              >
                 <li className="flex items-center space-x-3">
                   {Icons.checkIcon}
                   <span className="text-gray-100">
-                    Individual configuration
+                    Configuración individual
+                  </span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  {Icons.checkIcon}
+                  <span className="text-gray-100">Sin tarifas ocultas</span>
+                </li>
+
+                <li className="flex items-center space-x-3">
+                  {Icons.checkIcon}
+                  <span className="text-gray-100">
+                    Soporte premium:
+                    <span className="font-semibold"> Ilimitado</span>
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
                   {Icons.checkIcon}
                   <span className="text-gray-100">
-                    No setup, or hidden fees
-                  </span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  {Icons.checkIcon}
-                  <span className="text-gray-100">
-                    Team size:{" "}
-                    <span className="font-semibold">10 developers</span>
-                  </span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  {Icons.checkIcon}
-                  <span className="text-gray-100">
-                    Premium support:{" "}
-                    <span className="font-semibold">24 months</span>
-                  </span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  {Icons.checkIcon}
-                  <span className="text-gray-100">
-                    Free updates:{" "}
-                    <span className="font-semibold">24 months</span>
+                    Posts:
+                    <span className="font-semibold"> Ilimitados</span>
                   </span>
                 </li>
               </ul>
-              <a
-                href="#"
-                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Get started
-              </a>
+              {user?.userPlan === "free" ? (
+                <button
+                  onClick={() => handleSelectPlan()}
+                  className="btn text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                  Obtener plan
+                </button>
+              ) : (
+                <span className="text-white">Plan actual</span>
+              )}
             </div>
           </div>
         </div>

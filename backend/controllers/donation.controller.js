@@ -2,8 +2,10 @@ const DonationService = require("../services/donation.service");
 const {
   donation: createDonationReference,
 } = require("../payments/mercadopago.config");
+const UsersService = require("../services/users.service");
 
 const donationService = new DonationService();
+const userService = new UsersService();
 
 const create = async (req, res) => {
   try {
@@ -37,6 +39,7 @@ const create = async (req, res) => {
       const paymentCheckout = await createDonationReference({
         amount,
         id: newDonation.id,
+        isSubscription: false,
       });
       return res.status(201).json({
         message: "Donation created successfully",
@@ -57,12 +60,72 @@ const create = async (req, res) => {
   }
 };
 
+const subscribe = async (req, res) => {
+  try {
+    const { eventId, userId, paymentStatus } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Is mandatory to bring data as...",
+        data: {
+          title: "String",
+          description: "String",
+          amount: "Number",
+          date: "2024-07-17 00:18:02.002 -0300",
+          userId: "UUID",
+          eventId: "UUID",
+        },
+      });
+    }
+    const data = {
+      title: "premium-plan",
+      amount: 1500,
+      description: "subscription payment",
+      date: new Date(),
+      eventId,
+      userId,
+      paymentStatus,
+    };
+    const newSubscription = await donationService.create(data);
+    try {
+      const paymentCheckout = await createDonationReference({
+        amount: 1500,
+        id: newSubscription.id,
+        isSubscription: true,
+        userId: userId,
+      });
+      return res.status(201).json({
+        message: "Suscribed successfully",
+        newSubscription,
+        init_point: paymentCheckout.init_point,
+      });
+    } catch (error) {
+      await donationService.delete(newSubscription.id);
+      return res.status(500).json({
+        advise:
+          "Error creating Mercado Pago preference, check de donation created or try later, Payment is a third party service",
+        message: error.message,
+        error,
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message, error });
+  }
+};
+
 const updateDonationStatus = async (req, res) => {
   try {
+    const isSubscription = req.query.isSubscription;
+    const userId = req.query.userId;
     const paymentStatus = req.query.status;
     const id = req.query.external_reference;
     await donationService.updateDonationStatus(id, paymentStatus);
-    res.redirect(`http://localhost:3001/thank-you`);
+    if (isSubscription) {
+      await userService.updateUser(userId, { userPlan: "premium" });
+      res.redirect("http://localhost:3001/subscription");
+    } else {
+      res.redirect(`http://localhost:3001/thank-you`);
+    }
   } catch (error) {
     res.status(400).json({ message: error.message, error });
   }
@@ -118,6 +181,7 @@ const _delete = async (req, res) => {
 
 module.exports = {
   create,
+  subscribe,
   updateDonationStatus,
   getById,
   getByEventId,

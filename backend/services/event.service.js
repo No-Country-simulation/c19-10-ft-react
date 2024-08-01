@@ -17,28 +17,22 @@ class EventService {
     return event;
   }
 
-  async findAll(userId) {
+  async findAll(userId, email) {
     try {
       const createdEvents = await models.Event.findAll({
         where: { userId: userId },
       });
-      const invitedEvents = await models.User.findAll({
-        where: { id: userId },
+      const invitedEvents = await models.Invitation.findAll({
+        where: { invited_email: email, state: "ACCEPTED" },
         include: [
           {
-            model: models.Invitation,
-            as: "invitations",
-            attributes: ["id", "eventId"],
-            include: [
-              {
-                model: models.Event,
-                as: "event",
-                attributes: ["id", "title", "description", "date", "type"],
-              },
-            ],
+            model: models.Event,
+            as: "event",
+            attributes: ["id", "title", "description", "date", "type"],
           },
         ],
       });
+
       return { createdEvents, invitedEvents };
     } catch (error) {
       console.error(error);
@@ -47,7 +41,8 @@ class EventService {
 
   async findById(id) {
     try {
-      return await models.Event.findByPk(id);
+      const event = await models.Event.findByPk(id);
+      return event;
     } catch (error) {
       console.log(error);
     }

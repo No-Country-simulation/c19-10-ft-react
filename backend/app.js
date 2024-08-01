@@ -18,6 +18,10 @@ app.get("/", (req, res) => {
   res.send("Backend with Node + Express + PostgreSQL");
 });
 
+app.get("/subscription", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/subscription.html"));
+});
+
 app.get("/thank-you", (req, res) => {
   res.sendFile(path.join(__dirname, "public/thank-you.html"));
 });

@@ -7,14 +7,15 @@ import { useRouter } from "next/router";
 import NewEventBackground from "../../../../public/new-event.webp";
 import formatDate from "@/utils/formatDate";
 import { jwtDecode } from "jwt-decode";
-
+const API_URL = process.env.API_BASE_URL;
 const Events = () => {
   const router = useRouter();
 
   const [events, setEvents] = useState([]);
 
-  const itemsPerPage = 3;
-  const totalItems = events?.length || 6;
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const totalItems =
+    events.invitedEvents?.length || events.createdEvents?.length || 6;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [currentPage, setCurrentPage] = useState(0);
   const [user, setUser] = useState();
@@ -31,16 +32,21 @@ const Events = () => {
 
   useEffect(() => {
     if (user) {
-      getEvents(user.id);
+      getEvents(user.id, user.email);
     }
+    const handleResize = () => {
+      setItemsPerPage(window.innerWidth < 640 ? 1 : 3);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [user]);
 
-  const getEvents = async (userId) => {
+  const getEvents = async (userId, email) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/api/v1/event/all?id=${userId}`
+        `${API_URL}/event/all?id=${userId}&email=${email}`
       );
-      console.log(data.allEvents);
       setEvents(data.allEvents);
     } catch (error) {
       console.error(error);
@@ -73,13 +79,12 @@ const Events = () => {
     (events?.createdEvents || []).slice(startIdx, endIdx),
     (events?.invitedEvents || []).slice(startIdx, endIdx),
   ];
-  console.log(currentItems);
   return (
     <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
       <Sidebar />
-      {(!events.createdEvents && !events.invitedEvents) ||
-      (events.createdEvents?.length === 0 &&
-        events.invitedEvents.length === 0) ? (
+      {(!events?.createdEvents && !events?.invitedEvents) ||
+      (events?.createdEvents?.length === 0 &&
+        events?.invitedEvents.length === 0) ? (
         <section className="w-full h-screen flex flex-col justify-center items-center">
           <div className="w-full h-full flex flex-col justify-center items-center px-2 md:px-0">
             <svg
@@ -119,8 +124,8 @@ const Events = () => {
           </div>
         </section>
       ) : (
-        <section className="w-full h-screen flex flex-col items-center justify-center ">
-          <div className="w-full px-8 pt-4">
+        <section className="w-full h-screen flex flex-col items-center justify-center  md:px-28">
+          <div className="w-full px-8 pt-4 ">
             <button
               onClick={goBack}
               className="btn btn-sm btn-primary bg-background text-primary hover:text-background"
@@ -139,20 +144,23 @@ const Events = () => {
               Volver
             </button>
           </div>
-          <div className="w-full h-full py-8 md:py-16 md:px-52">
-            <h2 className="md:text-5xl  px-8 md:px-12 font-bold text-primary mb-4 ">
+          <div className="w-full h-full py-8 md:py-16 md:px-52 mt-10 md:mt-0 -z-0">
+            <h2 className="text-2xl md:text-5xl text-center md:text-left px-8 md:px-12 font-bold text-primary mb-4 ">
               Tús eventos
             </h2>
-            <div className="relative overflow-hidden w-full h-full  flex flex-col gap-4 items-start justify-center md:items-center">
-              <div className="px-8 md:px-12 grid grid-cols-2 sm:grid-cols-3 gap-4">
+
+            <div className="relative overflow-hidden w-full h-full items-center  flex flex-col gap-4  justify-start md:justify-center -z-0">
+              {currentItems[0].length > 0 && (
+                <h2 className="font-semibold md:text-xl md:pl-14 w-full text-center md:text-start text-accent">
+                  Eventos que estas organizando
+                </h2>
+              )}
+              <div className="px-8 md:px-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {currentItems[0]?.map((item) => (
                   <section className="w-full flex flex-col gap-2" key={item.id}>
-                    <h2 className="font-semibold text-xl">
-                      Eventos que estas organizando
-                    </h2>
                     <div
                       onClick={() => goToEventDetail(item.id)}
-                      className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
+                      className="bg-white cursor-pointer border border-black p-4 rounded-lg h-[300px] w-[250px] sm:w-[380px] sm:h-[300px] drop-shadow-md"
                     >
                       <Image
                         src={NewEventBackground}
@@ -172,15 +180,21 @@ const Events = () => {
                   </section>
                 ))}
               </div>
-              <div className="px-8 md:px-12 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {currentItems[1]?.map((item) => (
-                  <section className="w-full flex flex-col gap-2" key={item.id}>
-                    <h2 className="font-semibold text-xl">
-                      Eventos a los que has sido invitado/a
-                    </h2>
+              {currentItems[1].length > 0 && (
+                <h2 className="font-semibold md:text-xl md:pl-14 w-full text-center md:text-start text-accent">
+                  Eventos a los que has sido invitado/a
+                </h2>
+              )}
+
+              <div className="px-8 md:px-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+                {currentItems[1]?.map((invitation) => (
+                  <section
+                    className="w-full flex flex-col gap-2"
+                    key={invitation.id}
+                  >
                     <div
-                      onClick={() => goToEventDetail(item.id)}
-                      className="bg-white cursor-pointer border border-black p-4 rounded-lg w-[170px] sm:w-[420px] sm:h-[300px] drop-shadow-md"
+                      onClick={() => goToEventDetail(invitation?.event.id)}
+                      className="bg-white cursor-pointer border border-black p-4 rounded-lg h-[300px] w-[250px] sm:w-[380px] sm:h-[300px] drop-shadow-md"
                     >
                       <Image
                         src={NewEventBackground}
@@ -190,14 +204,13 @@ const Events = () => {
                         alt="bg-img"
                       />
                       <h2 className=" sm:text-2xl mt-2 font-bold">
-                        {item?.invitations[0]?.event.title}
+                        {invitation?.event.title}
                       </h2>
                       <p className=" text-sm ">
-                        {" "}
-                        {item?.invitations[0]?.event.description}
+                        {invitation?.event.description}
                       </p>
                       <p className="text-sm font-semibold mt-6">
-                        Fecha: {formatDate(item?.invitations[0]?.event.date)}
+                        Fecha: {formatDate(invitation?.event.date)}
                       </p>
                     </div>
                   </section>
@@ -207,7 +220,7 @@ const Events = () => {
                 onClick={handlePrev}
                 className="absolute left-0 top-1/2 transform -translate-y-1/2  text-white p-2"
               >
-                {events.length > 6 && (
+                {events.invitedEvents.length > 3 && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="1.5em"
@@ -225,7 +238,7 @@ const Events = () => {
                 onClick={handleNext}
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 text-white p-2"
               >
-                {events.length > 6 && (
+                {events.invitedEvents.length > 3 && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="1.5em"

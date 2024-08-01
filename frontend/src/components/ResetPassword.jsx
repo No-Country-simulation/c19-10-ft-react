@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { jwtDecode } from "jwt-decode";
+const API_URL = process.env.API_BASE_URL;
 
 const ResetPasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -21,15 +22,11 @@ const ResetPassword = () => {
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log("log del token", token);
     try {
-      await axios.put(
-        `http://localhost:3001/api/v1/users/reset-password?token=${token}`,
-        {
-          email: decodedToken?.email,
-          password: values.password,
-        }
-      );
+      await axios.put(`${API_URL}/users/reset-password?token=${token}`, {
+        email: decodedToken?.email,
+        password: values.password,
+      });
       setMessage("Contraseña restablecida con éxito.");
       setTimeout(() => router.push("/login"), 2000);
     } catch (error) {

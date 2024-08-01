@@ -8,7 +8,7 @@ const client = new MercadoPagoConfig({
 
 const preference = new Preference(client);
 
-const donation = async ({ amount, id }) => {
+const donation = async ({ amount, id, isSubscription, userId }) => {
   const body = {
     items: [
       {
@@ -18,7 +18,7 @@ const donation = async ({ amount, id }) => {
       },
     ],
     back_urls: {
-      success: `http://localhost:3001/api/v1/donation/success`,
+      success: `http://localhost:3001/api/v1/donation/success?isSubscription=${isSubscription}&userId=${userId}`,
       failure: `http://localhost:3001/api/v1/donation/failure`,
       pending: `http://localhost:3001/api/v1/donation/pending`,
     },

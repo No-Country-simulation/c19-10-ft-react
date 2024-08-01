@@ -12,6 +12,16 @@ class PostService {
     }
   }
 
+  async countUserPosts(userId, eventId) {
+    try {
+      return await models.Post.count({
+        where: { userId: userId, eventId: eventId },
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async findAll(id) {
     try {
       return await models.Post.findAll({

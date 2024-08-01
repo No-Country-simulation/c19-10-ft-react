@@ -58,7 +58,7 @@ const donationSchema = {
     field: "userId",
   },
   eventId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.UUID,
     references: {
       model: Event,

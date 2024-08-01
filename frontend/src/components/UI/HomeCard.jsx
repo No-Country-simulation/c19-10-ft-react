@@ -17,7 +17,11 @@ const HomeCard = ({ image, size, title, path, onClick }) => {
       onClick={path ? () => navigateTo(path) : onClick}
     >
       <Image
-        className="w-full h-full object-cover"
+        className={
+          !path
+            ? "w-[250px] sm:w-full h-[100px] sm:h-full object-cover"
+            : "w-full h-full object-cover"
+        }
         src={image}
         width="auto"
         height="auto"

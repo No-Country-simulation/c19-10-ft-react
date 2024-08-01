@@ -6,6 +6,7 @@ import Image from "next/image";
 import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
+const API_URL = process.env.API_BASE_URL;
 
 const LoginSchema = Yup.object().shape({
   name: Yup.string().required("Campo requerido"),
@@ -45,10 +46,7 @@ const LoginPage = () => {
           validationSchema={LoginSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              await axios.post(
-                "http://localhost:3001/api/v1/users/register",
-                values
-              );
+              await axios.post(`${API_URL}/users/register`, values);
               router.push("/login");
             } catch (error) {
               console.error("Error al registrarse:", error);
@@ -67,6 +65,7 @@ const LoginPage = () => {
                   Nombre
                 </label>
                 <Field
+                  disabled={isSubmitting}
                   type="input"
                   id="name"
                   name="name"
@@ -86,6 +85,7 @@ const LoginPage = () => {
                   Correo Electrónico
                 </label>
                 <Field
+                  disabled={isSubmitting}
                   type="email"
                   id="email"
                   name="email"
@@ -106,6 +106,7 @@ const LoginPage = () => {
                 </label>
                 <div className="relative">
                   <Field
+                    disabled={isSubmitting}
                     type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
@@ -127,10 +128,10 @@ const LoginPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100"
+                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 btn"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Cargando..." : "Registrarse"}
+                {isSubmitting ? "Registrando..." : "Registrarse"}
               </button>
             </Form>
           )}

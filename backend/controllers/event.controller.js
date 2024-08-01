@@ -27,9 +27,9 @@ const create = async (req, res) => {
 };
 
 const get = async (req, res) => {
-  const { id } = req.query;
+  const { id, email } = req.query;
   try {
-    const allEvents = await eventService.findAll(id);
+    const allEvents = await eventService.findAll(id, email);
     res
       .status(200)
       .json({ message: "These are the total events", allEvents: allEvents });

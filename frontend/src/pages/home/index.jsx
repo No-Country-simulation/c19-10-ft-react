@@ -1,22 +1,46 @@
 import Guardian from "@/components/auth/guardian";
 import { jwtDecode } from "jwt-decode";
-
 import NewEventBackground from "../../../public/new-event.webp";
 import YourEventsBackground from "../../../public/your-events.webp";
 import NigthEvent from "../../../public/nigth-event.webp";
 import SunsetEvent from "../../../public/sunset-event.webp";
 import LunchEvent from "../../../public/lunch-event.webp";
-
 import HomeCard from "@/components/UI/HomeCard";
 import RegisterEventModal from "@/components/RegisterEventModal";
 import Sidebar from "@/components/UI/Sidebar";
-
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
+const API_URL = process.env.API_BASE_URL;
+
+const fetchUser = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+  try {
+    const res = await axios.get(`${API_URL}/users/${userId}`);
+    return res.data.user;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching user");
+  }
+};
 
 const Home = () => {
   const router = useRouter();
-  const [user, setUser] = useState();
+  const [userId, setUserId] = useState(null);
+
+  const {
+    data: userData,
+    isError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchUser(userId),
+    enabled: !!userId,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,28 +53,40 @@ const Home = () => {
       router.push("/login");
     } else {
       const data = jwtDecode(token);
-      setUser(data);
+      setUserId(data.id);
     }
-  }, []);
+  }, [router]);
 
   const logout = () => {
     localStorage.removeItem("token");
     router.push("/");
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) {
+    console.error("Failed to fetch user data");
+    router.push("/login");
+    return null;
+  }
+
+  const updateUser = () => {
+    refetch();
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
-      <Sidebar />
+    <div className="flex flex-col sm:flex-row justify-between items-center w-full bg-white">
+      <Sidebar user={userData} updateUser={updateUser} />
       <div className="w-full">
-        <section className="w-full h-screen md:h-full py-4 px-12 md:py-12 md:px-56 flex flex-col justify-center items-center gap-4">
+        <section className="w-full h-screen md:h-full mt-4 md:mt-0 px-12 md:py-6 md:px-56 flex flex-col justify-center items-center gap-4">
           <div className="w-full flex justify-between items-center">
-            <h1 className="text-3xl md:text-5xl text-primary font-bold">
-              Bienvenido, {user?.name}.
+            <h1 className="text-2xl md:text-5xl text-primary font-bold">
+              Bienvenido, {userData?.name}.
             </h1>
             <button
-              onClick={() => logout()}
-              className="bg-red-600 btn btn-xs md:btn-md text-secondary hover:bg-red-300 "
+              onClick={logout}
+              className="bg-red-600 btn btn-xs md:btn-md text-secondary hover:bg-red-300"
             >
-              Cerrar sesion
+              Cerrar sesión
             </button>
           </div>
           <section className="grid grid-cols-3 grid-rows-1 gap-4 my-4">
@@ -59,7 +95,7 @@ const Home = () => {
               image={NewEventBackground}
               size={2}
               title={"Registra tu evento"}
-              onClick={() => openModal()}
+              onClick={openModal}
             />
             <HomeCard
               image={YourEventsBackground}
@@ -68,9 +104,9 @@ const Home = () => {
               path={"/home/events"}
             />
           </section>
-          <section className="w-full h-full flex flex-col justify-center items-center">
+          <section className="w-full md:h-full flex flex-col md:justify-center items-center">
             <div className="w-full">
-              <span className="text-xs ">Proximamente</span>
+              <span className="text-xs">Próximamente</span>
               <h2 className="text-3xl text-primary font-semibold opacity-25">
                 Eventos disponibles
               </h2>
