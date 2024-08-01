@@ -1,4 +1,5 @@
 const PostService = require("../services/post.service");
+const { models } = require("../libs/sequelize");
 
 const postService = new PostService();
 
@@ -7,10 +8,25 @@ const create = async (req, res) => {
     const { content, userId, eventId } = req.body;
     const imageUrl = req.file ? req.file.path : null;
 
+    const user = await models.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const maxPhotos = user.userPlan === "premium" ? Infinity : 3;
+    const photoCount = await postService.countUserPosts(userId, eventId);
+
+    if (photoCount >= maxPhotos) {
+      return res.status(403).json({
+        message: "Límite de fotos alcanzado, \n suscríbete al plan premium 😉",
+      });
+    }
+
     if (userId && eventId && content) {
       const data = { content, userId, eventId, imageUrl };
+
       const newPost = await postService.create(data);
-      res.status(201).json({ message: "Post created successfully", newPost });
+      res.status(201).json({ message: "Post creado correctamente", newPost });
     } else {
       res.status(400).json({
         frontendMessage: "Content or title must be filled",

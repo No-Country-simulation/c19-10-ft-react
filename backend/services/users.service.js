@@ -4,7 +4,6 @@ const { Op } = require("sequelize");
 const { sendEmailFunction } = require("../nodemailer/sendEmail");
 const { v4: uuidv4 } = require("uuid");
 
-
 class UsersService {
   constructor() {}
 
@@ -12,16 +11,16 @@ class UsersService {
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
-  
+
     const mailObject = {
-      email: email, 
+      email: email,
       subject: "Welcome to Celebria.",
       template: "LogInMessage",
       context: {
         name: name,
-      }
-    }
-   
+      },
+    };
+
     try {
       if (!validateUser) {
         const user = await models.User.create({
@@ -40,16 +39,15 @@ class UsersService {
 
   async updatePassword(email, url) {
     try {
-
       const mailObject = {
-        email: email, 
+        email: email,
         subject: "Celebria's Team: Reset password",
-        template: "LogInMessage",
+        template: "UpdatePassword",
         context: {
           name: "",
-          url: url
-        }
-      }
+          url: url,
+        },
+      };
       if (email) await sendEmailFunction(mailObject);
     } catch (error) {
       console.log(error);
@@ -66,11 +64,11 @@ class UsersService {
       );
 
       const mailObject = {
-        email: email, 
+        email: email,
         subject: "Contraseña restablecida con exito",
         template: "ResetPassword",
-        context: { }
-      }
+        context: {},
+      };
 
       await sendEmailFunction(mailObject);
 

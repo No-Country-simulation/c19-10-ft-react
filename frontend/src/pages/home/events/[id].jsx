@@ -7,11 +7,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import AddCommentForm from "@/components/AddCommentForm";
 import AddPostModal from "@/components/AddPostModal";
 import Sidebar from "@/components/UI/Sidebar";
-
+const API_URL = process.env.API_BASE_URL;
 const sendDonationSchema = Yup.object().shape({
   title: Yup.string().required("El titulo es requerido."),
   description: Yup.string().required("La descripción es requerida."),
@@ -20,45 +21,72 @@ const sendDonationSchema = Yup.object().shape({
     .required("El monto es requerido."),
 });
 
+const fetchUser = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+  try {
+    const res = await axios.get(`${API_URL}/users/${userId}`);
+    return res.data.user;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching user");
+  }
+};
+
 const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const { data: user, refetch } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchUser(userId),
+    enabled: !!userId,
+  });
 
   const [isPostsModalOpen, setIsPostsModalOpen] = useState(false);
   const [selectedView, setSelectedView] = useState("invitations");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [user, setUser] = useState();
   const router = useRouter();
   const { id } = router.query;
   const [event, setEvent] = useState(null);
   const [invitations, setInvitations] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [disableInviteBtn, setDisableInviteBtn] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const openPostsModal = () => setIsPostsModalOpen(true);
   const closePostsModal = () => setIsPostsModalOpen(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      const data = jwtDecode(token);
-      setUser(data);
+  const goBack = () => {
+    router.push("/home/events");
+  };
+
+  const updateUser = async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error("Error al actualizar el usuario:", error);
     }
-  }, []);
+  };
 
   const getEventPosts = async (id) => {
     try {
-      const res = await axios.get(
-        `http://localhost:3001/api/v1/post/all?id=${id}`
-      );
+      const res = await axios.get(`${API_URL}/post/all?id=${id}`);
       if (res) {
         setPosts(res.data.allPosts);
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const checkStr = (str) => {
+    if (str) {
+      const isSplitted = str.split(" ");
+      return isSplitted.length === 1;
+    }
+    return false;
   };
 
   const statusTranslation = {
@@ -111,9 +139,7 @@ const EventDetail = () => {
 
   const updateComments = async (postId) => {
     try {
-      const res = await axios.get(
-        `http://localhost:3001/api/v1/comment/?id=${postId}`
-      );
+      const res = await axios.get(`${API_URL}/comment/?id=${postId}`);
       const updatedComments = res.data;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -127,21 +153,21 @@ const EventDetail = () => {
 
   const getEventData = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/v1/event/${id}`);
+      const res = await axios.get(`${API_URL}/event/${id}`);
       return res.data.eventById;
     } catch (error) {
       console.error("Error fetching event data:", error);
+      return null;
     }
   };
 
   const getInvitationsList = async (id) => {
     try {
-      const res = await axios.get(
-        `http://localhost:3001/api/v1/invitation/event/${id}`
-      );
+      const res = await axios.get(`${API_URL}/invitation/event/${id}`);
       return res.data.invitations;
     } catch (error) {
       console.error("Error fetching invitations list:", error);
+      return [];
     }
   };
 
@@ -159,12 +185,40 @@ const EventDetail = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    const data = jwtDecode(token);
+    setUserId(data.id);
+  }, [router]);
+
+  useEffect(() => {
     if (id) {
-      getEventData(id).then((data) => setEvent(data));
-      getInvitationsList(id).then((data) => setInvitations(data));
-      getEventPosts(id);
+      const fetchData = async () => {
+        try {
+          const eventData = await getEventData(id);
+          setEvent(eventData);
+          const invitationsData = await getInvitationsList(id);
+          setInvitations(invitationsData);
+          await getEventPosts(id);
+        } catch (error) {
+          console.error("Error fetching event data:", error);
+        }
+      };
+      fetchData();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (user && invitations.length > 0) {
+      const isEmailInvited = invitations.some(
+        (invite) => invite.invitedEmail === user.email
+      );
+      setDisableInviteBtn(isEmailInvited);
+    }
+  }, [user, invitations]);
 
   const renderContent = () => {
     switch (selectedView) {
@@ -220,7 +274,7 @@ const EventDetail = () => {
                   const date = new Date();
 
                   const donation = await axios.post(
-                    "http://localhost:3001/api/v1/donation/create",
+                    `${API_URL}/donation/create`,
                     { ...values, date, eventId: id, userId: user?.id }
                   );
 
@@ -321,8 +375,8 @@ const EventDetail = () => {
         );
       case "posts":
         return (
-          <div className="w-full h-full py-8 flex flex-col justify-center items-center min-h-[700px]">
-            <div className="w-full flex justify-end items-center mb-4">
+          <div className="w-full h-full flex flex-col justify-center items-center min-h-[700px]">
+            <div className="w-full flex justify-end items-center mt-8 mb-2">
               <button
                 onClick={openPostsModal}
                 className="btn btn-sm text-white btn-primary"
@@ -330,17 +384,17 @@ const EventDetail = () => {
                 Agregar post
               </button>
             </div>
-            <section className="w-full min-h-[600px] flex justify-center items-center">
+            <section className="w-full h-full  min-h-[600px] flex justify-center items-center">
               {posts.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                   {posts?.map((post) => (
                     <section
                       key={post.id}
-                      className="border flex w-full max-w-3xl p-4 m-2 rounded-lg"
+                      className="border flex flex-col md:flex-row w-full max-w-3xl p-4 m-2 rounded-lg"
                     >
-                      <div className="flex gap-2 w-full">
+                      <div className="flex flex-col md:flex-row gap-2 w-full h-full min-h-[400px] md:min-h-[590px]">
                         <Image
-                          className="rounded-lg object-cover"
+                          className="rounded-lg object-cover min-h-[400px] md:h-full "
                           src={post.imageUrl}
                           width="400"
                           height="300"
@@ -367,7 +421,13 @@ const EventDetail = () => {
                                     <p className="font-semibold">
                                       {comment?.user?.name}
                                     </p>
-                                    <p className="text-sm">
+                                    <p
+                                      className={
+                                        checkStr(comment.content)
+                                          ? "text-sm max-w-[25ch] truncate"
+                                          : "text-sm max-w-[25ch]"
+                                      }
+                                    >
                                       {comment?.content}
                                     </p>
                                   </li>
@@ -414,13 +474,33 @@ const EventDetail = () => {
   };
 
   return (
-    <section className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
-      {" "}
-      <Sidebar />
-      <div className="w-full h-full min-h-screen py-4 px-12 md:py-12 md:px-56 bg-white flex flex-col items-start justify-start gap-4">
+    <section className="flex flex-col sm:flex-row justify-center items-start w-full bg-white">
+      <Sidebar user={user} updateUser={updateUser} />
+      <div className="md:min-w-[230px] flex justify-end pt-28 md:pt-4 pl-12 ">
+        <button
+          onClick={goBack}
+          className="btn btn-sm btn-primary bg-background text-primary hover:text-background"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="m10 18l-6-6l6-6l1.4 1.45L7.85 11H20v2H7.85l3.55 3.55z"
+            ></path>
+          </svg>
+          Volver
+        </button>
+      </div>
+      <div className="w-full h-full min-h-screen py-8 px-12 md:py-28  md:pl-16 md:pr-40 bg-white flex flex-col items-start justify-start gap-4">
         <section className="w-full h-full flex items-center justify-between gap-2">
           <div className="flex flex-col gap-2">
-            <h1 className="text-5xl text-primary font-bold">{event?.title}</h1>
+            <h1 className="text-2xl md:text-5xl text-primary font-bold">
+              {event?.title}
+            </h1>
             <p>{event?.description}</p>
             <p className="text-sm">
               Fecha del evento: {formatDate(event?.date)}
@@ -428,7 +508,11 @@ const EventDetail = () => {
           </div>
 
           <button
-            className="btn btn-md hover:bg-accent btn-primary text-white"
+            className={
+              disableInviteBtn
+                ? "hidden"
+                : "btn btn-sm md:btn-md hover:bg-accent btn-primary text-white"
+            }
             onClick={openModal}
           >
             Invitar

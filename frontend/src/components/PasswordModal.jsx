@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Modal from "@/components/UI/Modal";
-// import axios from "axios";
 
 const PasswordModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");

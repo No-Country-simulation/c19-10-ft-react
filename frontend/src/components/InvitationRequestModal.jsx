@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+const API_URL = process.env.API_BASE_URL;
 
 const InvitationRequestModal = (isOpen) => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -13,7 +14,6 @@ const InvitationRequestModal = (isOpen) => {
   const router = useRouter();
   const { token } = router.query;
 
-  const BASE_URL = "http://localhost:3001/api/v1/invitation";
   useEffect(() => {
     if (token) {
       const decoded = jwtDecode(token);
@@ -26,7 +26,7 @@ const InvitationRequestModal = (isOpen) => {
 
   const handleAccept = async () => {
     try {
-      await axios.put(`${BASE_URL}/${tokenData?.invitationId}`, {
+      await axios.put(`${API_URL}/invitation/${tokenData?.invitationId}`, {
         state: "ACCEPTED",
         acceptationDate: new Date(),
       });
@@ -53,7 +53,7 @@ const InvitationRequestModal = (isOpen) => {
   const handleDecline = async () => {
     setModalVisible(false);
     try {
-      await axios.put(`${BASE_URL}/${tokenData?.invitationId}`, {
+      await axios.put(`${API_URL}/invitation/${tokenData?.invitationId}`, {
         state: "REJECTED",
         acceptationDate: new Date(),
       });

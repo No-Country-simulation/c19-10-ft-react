@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
+const API_URL = process.env.API_BASE_URL;
 
 const InvitationModal = ({ isOpen, onClose, eventId, updateInvitations }) => {
   const [token, setToken] = useState(null);
@@ -26,7 +27,7 @@ const InvitationModal = ({ isOpen, onClose, eventId, updateInvitations }) => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await axios.post("http://localhost:3001/api/v1/invitation/create", {
+      await axios.post(`${API_URL}/invitation/create`, {
         ...values,
         eventId,
         userId: token?.id,
@@ -96,18 +97,19 @@ const InvitationModal = ({ isOpen, onClose, eventId, updateInvitations }) => {
 
               <div className="flex justify-end">
                 <button
+                  disabled={isSubmitting}
                   type="button"
                   onClick={onClose}
-                  className="bg-background text-gray-500 border border-primary px-4 py-2 rounded-md"
+                  className="btn bg-background text-gray-500 border border-primary px-4 py-2 rounded-md"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary text-white px-4 py-2 ml-4 rounded-md"
+                  className="btn btn-primary text-white px-4 py-2 ml-4 rounded-md"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Cargando..." : "Guardar"}
+                  {isSubmitting ? "Invitando..." : "Invitar"}
                 </button>
               </div>
             </Form>

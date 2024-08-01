@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
+const API_URL = process.env.API_BASE_URL;
 
 const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
 
@@ -32,7 +33,7 @@ const RegisterEventModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await axios.post("http://localhost:3001/api/v1/event/create", {
+      await axios.post(`${API_URL}/event/create`, {
         ...values,
         date: eventDate,
         userId: token?.id,

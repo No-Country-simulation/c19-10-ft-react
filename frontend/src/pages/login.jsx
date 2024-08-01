@@ -7,6 +7,10 @@ import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
 import Link from "next/link";
+import Swal from "sweetalert2";
+
+const API_URL = process.env.API_BASE_URL;
+
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email("Correo electrónico inválido")
@@ -58,9 +62,8 @@ const LoginPage = () => {
           validationSchema={LoginSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              console.log("Valores del formulario:", values);
               const response = await axios.post(
-                "http://localhost:3001/api/v1/users/login",
+                `${API_URL}/users/login`,
                 values
               );
               const { accessToken, refreshToken } = response.data;
@@ -68,6 +71,12 @@ const LoginPage = () => {
               localStorage.setItem("refreshToken", refreshToken);
               router.push("/home");
             } catch (error) {
+              Swal.fire({
+                icon: "error",
+                title: "Ocurrió un error al iniciar sesión.",
+                text: `${error.response.data.message}`,
+                timer: 3500,
+              });
               console.error("Error en el login:", error);
             } finally {
               setSubmitting(false);
@@ -84,6 +93,7 @@ const LoginPage = () => {
                   Correo Electrónico
                 </label>
                 <Field
+                  disabled={isSubmitting}
                   type="email"
                   id="email"
                   name="email"
@@ -104,6 +114,7 @@ const LoginPage = () => {
                 </label>
                 <div className="relative">
                   <Field
+                    disabled={isSubmitting}
                     type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
@@ -125,10 +136,10 @@ const LoginPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100"
+                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 btn"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Cargando..." : "Iniciar Sesión"}
+                {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
               </button>
             </Form>
           )}

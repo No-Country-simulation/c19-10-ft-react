@@ -1,11 +1,9 @@
 const express = require("express");
-
+const invitationRouter = require("./invitation.router");
 const usersRouter = require("./users.router");
 const eventRouter = require("./event.router");
 const commentsRouter = require("./comment.router");
-const invitationRouter = require("./invitation.router");
 const postRouter = require("./post.router");
-
 const donationRouter = require("./donation.router");
 
 function routerApi(app) {

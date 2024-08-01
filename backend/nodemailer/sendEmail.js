@@ -1,44 +1,38 @@
-const nodemailer = require("nodemailer")
-require("dotenv").config()
-const hbs = require("nodemailer-express-handlebars")
-
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+const hbs = require("nodemailer-express-handlebars");
 
 const sendEmailFunction = ({ email, subject, template, context }) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
-    const transporter = nodemailer.createTransport({
+  const handlebarOptions = {
+    viewEngine: {
+      defaultLayout: false,
+    },
+    viewPath: "views/",
+  };
 
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
+  transporter.use("compile", hbs(handlebarOptions));
 
-    const handlebarOptions = {
-        viewEngine: {
-            defaultLayout: false
-        },
-        viewPath: "views",
-    }
+  const message = {
+    from: process.env.SMTP_USER,
+    to: email,
+    subject: subject,
+    template: template,
+    context,
+  };
 
-    transporter.use("compile", hbs(handlebarOptions))
-
-    const message = {
-        from: process.env.SMTP_USER,
-        to: email, //se toma desde el modelo user
-        subject: subject,
-        template: template,
-        context: {
-            name: context.name,
-            url: context.url
-        }
-    }
-
-    return transporter.sendMail(message);
-}
+  return transporter.sendMail(message);
+};
 
 module.exports = {
-    sendEmailFunction
-}
+  sendEmailFunction,
+};

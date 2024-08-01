@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import "sweetalert2/dist/sweetalert2.css";
+const API_URL = process.env.API_BASE_URL;
 
 const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
   const [token, setToken] = useState(null);
@@ -41,7 +42,7 @@ const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
     formData.append("userId", token?.id);
     formData.append("eventId", eventId);
     try {
-      await axios.post("http://localhost:3001/api/v1/post/create", formData, {
+      await axios.post(`${API_URL}/post/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -52,9 +53,9 @@ const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Error al crear post",
+        text: `${error.response.data.message}`,
       });
-      console.error("Error al añadir post:", error);
+      console.error("Error al añadir post:", error.response.data.message);
     } finally {
       setSubmitting(false);
       resetForm();
@@ -88,6 +89,7 @@ const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
                   Descripción
                 </label>
                 <Field
+                  disabled={isSubmitting}
                   placeholder="Descripción"
                   id="content"
                   name="content"
@@ -108,6 +110,7 @@ const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
                   Foto
                 </label>
                 <input
+                  disabled={isSubmitting}
                   id="image"
                   name="image"
                   onChange={(event) => {
@@ -130,6 +133,7 @@ const AddPostModal = ({ isOpen, onClose, eventId, updatePosts }) => {
               </div>
               <div className="flex justify-end gap-2">
                 <button
+                  disabled={isSubmitting}
                   type="button"
                   onClick={onClose}
                   className="bg-background text-gray-500 border border-primary btn btn-sm"

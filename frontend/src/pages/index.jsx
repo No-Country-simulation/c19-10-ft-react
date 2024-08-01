@@ -1,5 +1,3 @@
-// pages/index.js
-
 import Hero from "../components/Hero";
 import NavBar from "../components/NavBar";
 import InvitationRequestModal from "@/components/InvitationRequestModal";
@@ -22,8 +20,8 @@ export default function Landing() {
     <div>
       <NavBar className="z-10" />
       <InvitationRequestModal isOpen={isModalOpen} />
-     <Hero className="z-0" /> 
-      <Footer/>
+      <Hero className="z-0" />
+      <Footer />
     </div>
   );
 }

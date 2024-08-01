@@ -1,26 +1,39 @@
-const { models } = require("../libs/sequelize")
+const { models } = require("../libs/sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 class EventService {
   constructor() {}
 
-    async create(eventData) {
+  async create(eventData) {
+    const { title, description, date, type, userId } = eventData;
+    const event = await models.Event.create({
+      id: uuidv4(),
+      title,
+      description,
+      date,
+      type,
+      userId,
+    });
+    return event;
+  }
 
-        const { title, description, date, type, userId } = eventData;
-        const event = await models.Event.create({
-            id: uuidv4(),
-            title,
-            description,
-            date,
-            type,
-            userId
-        });
-        return event
-    }
-
-  async findAll() {
+  async findAll(userId, email) {
     try {
-      return await models.Event.findAll();
+      const createdEvents = await models.Event.findAll({
+        where: { userId: userId },
+      });
+      const invitedEvents = await models.Invitation.findAll({
+        where: { invited_email: email, state: "ACCEPTED" },
+        include: [
+          {
+            model: models.Event,
+            as: "event",
+            attributes: ["id", "title", "description", "date", "type"],
+          },
+        ],
+      });
+
+      return { createdEvents, invitedEvents };
     } catch (error) {
       console.error(error);
     }
@@ -28,7 +41,8 @@ class EventService {
 
   async findById(id) {
     try {
-      return await models.Event.findByPk(id);
+      const event = await models.Event.findByPk(id);
+      return event;
     } catch (error) {
       console.log(error);
     }

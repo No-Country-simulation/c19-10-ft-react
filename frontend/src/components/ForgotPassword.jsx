@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-// import axios from "axios";
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -14,10 +13,6 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      //   await axios.post(
-      //     "http://localhost:3004/api/users/send-reset-password-email",
-      //     values
-      //   );
       setMessage("Se ha enviado un enlace de recuperación a tu correo.");
     } catch (error) {
       console.error("Error al enviar el correo de recuperación:", error);
