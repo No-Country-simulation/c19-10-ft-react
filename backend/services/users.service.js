@@ -1,27 +1,84 @@
 const { models } = require("../libs/sequelize");
 const bcrypt = require("bcryptjs");
-const { Op } = require('sequelize')
+const { Op } = require("sequelize");
+const { sendEmailFunction } = require("../nodemailer/sendEmail");
+const { v4: uuidv4 } = require("uuid");
 
 class UsersService {
-  constructor() { }
+  constructor() {}
 
   async register(userData) {
-
     const { name, email, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
     const validateUser = await models.User.findOne({ where: { email } });
 
+    const mailObject = {
+      email: email,
+      subject: "Welcome to Celebria.",
+      template: "LogInMessage",
+      context: {
+        name: name,
+      },
+    };
+
     try {
       if (!validateUser) {
         const user = await models.User.create({
+          id: uuidv4(),
           name,
           email,
           password: hashedPassword,
         });
-        return user
+        await sendEmailFunction(mailObject);
+        return user;
       }
     } catch (error) {
-      return error
+      return error;
+    }
+  }
+
+  async updatePassword(email, url) {
+    try {
+      const mailObject = {
+        email: email,
+        subject: "Celebria's Team: Reset password",
+        template: "UpdatePassword",
+        context: {
+          name: "",
+          url: url,
+        },
+      };
+      if (email) await sendEmailFunction(mailObject);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async resetPassword(email, password) {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const result = await models.User.update(
+        { password: hashedPassword },
+        { where: { email } }
+      );
+
+      const mailObject = {
+        email: email,
+        subject: "Contraseña restablecida con exito",
+        template: "ResetPassword",
+        context: {},
+      };
+
+      await sendEmailFunction(mailObject);
+
+      if (result[0] === 0) {
+        console.log("Usuario no encontrado o contraseña no actualizada");
+      } else {
+        console.log("Contraseña actualizada exitosamente");
+      }
+    } catch (error) {
+      console.log("Error al actualizar la contraseña:", error);
     }
   }
 
@@ -31,7 +88,7 @@ class UsersService {
 
   async findUsers() {
     try {
-      return await models.User.findAll()
+      return await models.User.findAll();
     } catch (error) {
       console.error(error);
     }
@@ -49,10 +106,9 @@ class UsersService {
     try {
       return await models.User.findAll({
         where: {
-          name:
-            { [Op.iLike]: `%${name}%` }
-        }
-      })
+          name: { [Op.iLike]: `%${name}%` },
+        },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -60,13 +116,12 @@ class UsersService {
 
   async updateUser(id, data) {
     try {
-      const updatedUser = await this.findById(id)
+      const updatedUser = await this.findById(id);
       return await updatedUser.update(data);
     } catch (error) {
       console.error(error);
     }
   }
-
 
   async deleteUser(id) {
     try {

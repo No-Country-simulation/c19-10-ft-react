@@ -46,18 +46,19 @@ const Hero = () => {
           </div>
         ))}
       </div>
+      {/* Contenedor texto - botones */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
-        <div className="mx-auto px-4 sm:px-0 text-left">
-          <p className="text-2xl sm:text-5xl font-bold mb-2 text-shadow">
+        <div className="mx-auto px-4 sm:px-0 sm:text-left">
+          <p className="text-3xl sm:text-5xl font-bold mb-2 text-shadow">
             Transformamos tus
           </p>
-          <p className="text-2xl sm:text-5xl font-bold mb-2 text-shadow">
-            momentos especiales en
+          <p className="text-3xl sm:text-5xl font-bold mb-2 text-shadow">
+            momentos especiales
           </p>
-          <p className="text-2xl sm:text-5xl font-bold mb-4 text-shadow">
-            recuerdos eternos.
+          <p className="text-3xl sm:text-5xl font-bold mb-4 text-shadow">
+            en recuerdos eternos.
           </p>
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="flex place-items-end gap-4  sm:gap-2 sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <Link href="/register" passHref>
               <Button
                 text="REGÍSTRATE"
@@ -66,7 +67,7 @@ const Hero = () => {
             </Link>
             <Button
               text="DESCUBRE MÁS"
-              className="w-full sm:w-auto bg-transparent border border-white text-white hover:bg-transparent"
+              className="w-40 sm:w-auto bg-transparent border border-white text-white hover:bg-transparent"
             />
           </div>
         </div>

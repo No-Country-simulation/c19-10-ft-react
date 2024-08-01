@@ -7,20 +7,18 @@ import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
 import axios from "axios";
 import Link from "next/link";
-const LoginSchema = Yup.object().shape({
+import Swal from "sweetalert2";
+const API_URL = process.env.API_BASE_URL;
+
+const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
     .email("Correo electrónico inválido")
     .required("Campo requerido"),
-  password: Yup.string().required("Campo requerido"),
 });
 
-const LoginPage = () => {
+const ForgotPasswordPage = () => {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div
@@ -40,11 +38,11 @@ const LoginPage = () => {
         {/*esquina superior derecha */}
         <div className="flex items-center">
           <p className="text-23 font-bold text-white mr-2">
-            ¿No te has registrado?
+            ¿Ya tienes cuenta?
           </p>
-          <Link href="/register" passHref>
+          <Link href="/login">
             <button className="bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100 font-bold text-base">
-              Registrarse
+              Iniciar sesión
             </button>
           </Link>
         </div>
@@ -52,27 +50,36 @@ const LoginPage = () => {
 
       {/* Contenedor */}
       <div className="max-w-sm w-full p-6 bg-white rounded-lg shadow-md mt-10">
-        <h1 className="text-2xl text-black mb-6">Inicia sesión</h1>
+        <h1 className="text-2xl text-black mb-6">Recuperar Contraseña</h1>
         <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={LoginSchema}
-          onSubmit={async (values, { setSubmitting }) => {
+          initialValues={{ email: "" }}
+          validationSchema={ForgotPasswordSchema}
+          onSubmit={async (values) => {
+            setIsSubmitting(true);
             try {
-              console.log("Valores del formulario:", values);
-              const response = await axios.post(
-                "http://localhost:3001/api/v1/users/login",
-                values
-              );
-              localStorage.setItem("token", response.data.token);
-              router.push("/home");
+              await axios.post(`${API_URL}/users/forgot-password`, values);
+              Swal.fire({
+                icon: "success",
+                title:
+                  "Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              router.push("/");
             } catch (error) {
-              console.error("Error en el login:", error);
+              console.error("Error al recuperar la contraseña:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Ocurrió un error al intentar recuperar la contraseña.",
+                showConfirmButton: false,
+                timer: 1500,
+              });
             } finally {
-              setSubmitting(false);
+              setIsSubmitting(false);
             }
           }}
         >
-          {({ isSubmitting }) => (
+          {() => (
             <Form>
               <div className="mb-6">
                 <label
@@ -93,40 +100,12 @@ const LoginPage = () => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-              <div className="mb-6">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Contraseña
-                </label>
-                <div className="relative">
-                  <Field
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-indigo-500 sm:text-sm bg-white border-grey border-2 py-2 px-3"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 px-4 py-2 bold text-sm primary focus:outline-none hover:text-primary"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? "Ocultar" : "Mostrar"}
-                  </button>
-                </div>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
               <button
                 type="submit"
                 className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Cargando..." : "Iniciar Sesión"}
+                {isSubmitting ? "Enviando..." : "Enviar Enlace de Recuperación"}
               </button>
             </Form>
           )}
@@ -136,4 +115,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ForgotPasswordPage;

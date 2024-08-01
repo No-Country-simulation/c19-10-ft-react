@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gracias !</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-top: 400px;
+        background-color: #e91e63;
+        color: white;
+      }
+      .message {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .countdown {
+        font-size: 18px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div><h1 class="title">Celebria</h1></div>
+    <div class="message">Muchas gracias por tu donación!</div>
+    <div class="countdown">
+      Esta ventana se cerrará en <span id="timer">5</span> segundos.
+    </div>
+
+    <script>
+      function startCountdown() {
+        var timerElement = document.getElementById("timer");
+        var countdown = 5;
+
+        var interval = setInterval(function () {
+          countdown--;
+          timerElement.textContent = countdown;
+
+          if (countdown <= 0) {
+            clearInterval(interval);
+            window.close();
+          }
+        }, 1000);
+      }
+      window.onload = startCountdown;
+    </script>
+  </body>
+</html>
