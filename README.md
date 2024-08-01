@@ -37,9 +37,6 @@ El principal objetivo de nuestra app es simplificar el proceso de organización 
 
 **Server:** Node, Express, Sequelize, JWT, BCryptjs, Cloudinary, Mercadopago, Nodemailer, Multer.
 
-
-## Screenshots
-
 ## Screenshots
 
 | ![App Screenshot](https://res.cloudinary.com/ddcrjdfrf/image/upload/v1722544096/celebria-icons/lzis40gnuxqgspwis091.jpg) | ![App Screenshot](https://res.cloudinary.com/ddcrjdfrf/image/upload/v1722543790/celebria-icons/rvuugp9hmwmry6m33fh4.jpg) | ![App Screenshot](https://res.cloudinary.com/ddcrjdfrf/image/upload/v1722543698/celebria-icons/j8r3hd3ssgidoxvos4zw.jpg) |
