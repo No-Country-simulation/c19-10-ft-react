@@ -18,14 +18,17 @@ El principal objetivo de nuestra app es simplificar el proceso de organización 
 
 ## Desarrolladores
 
-- [@guidounion6 🧑🏻‍💻](https://github.com/guidounion6) - Dev. Backend.
-- [@Augustofrx 🧑🏻‍💻](https://github.com/Augustofrx) - Dev. FullStack.
-- [@GiseOt 👩🏻‍💻](https://github.com/GiseOt) - Dev. Frontend.
-- [@MatiasBidart 🧑🏻‍💻](https://github.com/MatiasBidart) - Dev. Backend.
-- [@ManzanoFernanda 👩🏻‍💻](https://github.com/ManzanoFernanda) - Dev. Frontend / UX-UI Designer.
-- [@jhonherrera7 🧑🏻‍💻](https://github.com/jhonherrera7) -  UX-UI Designer.
-- [@Carlosabogal 🧑🏻‍💻](https://github.com/Carlosabogal) - Dev. Backend.
-- [@cruzac1985 👩🏻‍💻](https://github.com/cruzac1985) - Dev. Backend.
+## Desarrolladores
+
+- [![guidounion6](https://img.shields.io/badge/Dev_Backend-%40guidounion6-blue?style=flat&logo=github&logoColor=white)](https://github.com/guidounion6)
+- [![Augustofrx](https://img.shields.io/badge/Dev_FullStack-%40Augustofrx-green?style=flat&logo=github&logoColor=white)](https://github.com/Augustofrx)
+- [![GiseOt](https://img.shields.io/badge/Dev_Frontend-%40GiseOt-purple?style=flat&logo=github&logoColor=white)](https://github.com/GiseOt)
+- [![MatiasBidart](https://img.shields.io/badge/Dev_Backend-%40MatiasBidart-blue?style=flat&logo=github&logoColor=white)](https://github.com/MatiasBidart)
+- [![ManzanoFernanda](https://img.shields.io/badge/Dev_Frontend_UX_UI_%40ManzanoFernanda-blue?style=flat&logo=github&logoColor=white)](https://github.com/ManzanoFernanda)
+- [![jhonherrera7](https://img.shields.io/badge/UX_UI_Designer-%40jhonherrera7-red?style=flat&logo=github&logoColor=white)](https://github.com/jhonherrera7)
+- [![Carlosabogal](https://img.shields.io/badge/Dev_Backend-%40Carlosabogal-blue?style=flat&logo=github&logoColor=white)](https://github.com/Carlosabogal)
+- [![cruzac1985](https://img.shields.io/badge/Dev_Backend-%40cruzac1985-blue?style=flat&logo=github&logoColor=white)](https://github.com/cruzac1985)
+
 
 ## Rubro
 
