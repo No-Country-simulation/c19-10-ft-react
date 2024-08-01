@@ -9,9 +9,11 @@ const app = express();
 
 const port = process.env.PORT || 3001;
 
+const { API_BASE_URL } = process.env;
+
 const routerApi = require("./routes");
 
-app.use(cors());
+app.use(cors({ origin: "https://celebria-app-frontend.vercel.app" }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -29,5 +31,5 @@ app.get("/thank-you", (req, res) => {
 routerApi(app);
 
 app.listen(port, () => {
-  console.log(`Backend is running on port ${port} \nhttp://localhost:${port}`);
+  console.log(`Backend is running on  \n ${API_BASE_URL}`);
 });

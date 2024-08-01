@@ -4,7 +4,7 @@ const eventService = require("./event.service");
 const EVENT_SERVICE = new eventService();
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
-const { JWT_SECRET, API_BASE_URL } = process.env;
+const { JWT_SECRET, CLIENT_BASE_URL } = process.env;
 const jwt = require("jsonwebtoken");
 const UsersService = require("./users.service");
 const USER_SERVICE = new UsersService();
@@ -32,7 +32,7 @@ class InvitationService {
           expiresIn: "15m",
         }
       );
-      const invitation_url = `${API_BASE_URL}?token=${token}`;
+      const invitation_url = `${CLIENT_BASE_URL}?token=${token}`;
       const emailOptions = {
         subject: "Tienes una invitación a un evento - Celebria !",
         text: `Has sido invitado al evento ${eventData.title}, puedes aceptar o rechazar la invitación ingresando al siguiente link: ${invitation_url}`,

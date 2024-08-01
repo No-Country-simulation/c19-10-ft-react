@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const {
-  DB_DATABASE,
+  DB_NAME,
   DB_USERNAME,
   DB_PASSWORD,
   DB_HOST,
@@ -13,13 +13,13 @@ const {
 } = process.env;
 
 const config = {
-  dbName: DB_DATABASE,
+  dbName: DB_NAME,
   dbUser: DB_USERNAME,
   dbPassword: DB_PASSWORD,
   dbHost: DB_HOST,
   dbPort: DB_PORT || 5432,
-  port: PORT || 3000,
-  env: NODE_ENV || "env",
+  port: PORT || 3001,
+  env: NODE_ENV || "production",
   mpToken: MP_TOKEN,
   host: HOST,
 };
