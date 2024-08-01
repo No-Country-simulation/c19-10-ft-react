@@ -33,9 +33,30 @@ El principal objetivo de nuestra app es simplificar el proceso de organización 
 
 ## Tech Stack
 
-**Client:** React / Next, TailwindCSS, DaisyUI, JWT, Formik, Yup, SweetAlert, Javascript.
+**Client:**
 
-**Server:** Node, Express, Sequelize, JWT, BCryptjs, Cloudinary, Mercadopago, Nodemailer, Multer.
+- ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)
+- ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)
+- ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+- ![DaisyUI](https://img.shields.io/badge/DaisyUI-0A0A0A?style=flat&logo=daisyui&logoColor=white)
+- ![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=json-web-tokens&logoColor=white)
+- ![Formik](https://img.shields.io/badge/Formik-61DAFB?style=flat&logo=formik&logoColor=white)
+- ![Yup](https://img.shields.io/badge/Yup-00C1D4?style=flat&logo=yup&logoColor=white)
+- ![SweetAlert](https://img.shields.io/badge/SweetAlert-FFD600?style=flat&logo=sweetalert&logoColor=black)
+- ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+
+**Server:**
+
+- ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
+- ![Express](https://img.shields.io/badge/Express.js-000000?style=flat&logo=express&logoColor=white)
+- ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=flat&logo=sequelize&logoColor=white)
+- ![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=json-web-tokens&logoColor=white)
+- ![BCryptjs](https://img.shields.io/badge/BCryptjs-000000?style=flat&logo=bcrypt&logoColor=white)
+- ![Cloudinary](https://img.shields.io/badge/Cloudinary-FAF0E6?style=flat&logo=cloudinary&logoColor=black)
+- ![Mercadopago](https://img.shields.io/badge/Mercado_Pago-00A859?style=flat&logo=mercadopago&logoColor=white)
+- ![Nodemailer](https://img.shields.io/badge/Nodemailer-000000?style=flat&logo=nodemailer&logoColor=white)
+- ![Multer](https://img.shields.io/badge/Multer-000000?style=flat&logo=multer&logoColor=white)
+
 
 ## Screenshots
 
