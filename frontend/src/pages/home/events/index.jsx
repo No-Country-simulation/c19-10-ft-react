@@ -4,21 +4,37 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
 import NewEventBackground from "../../../../public/new-event.webp";
 import formatDate from "@/utils/formatDate";
 import { jwtDecode } from "jwt-decode";
 const API_URL = process.env.API_BASE_URL;
+
+const fetchUser = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+  try {
+    const res = await axios.get(`${API_URL}/users/${userId}`);
+    return res.data.user;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching user");
+  }
+};
+
 const Events = () => {
+  const [userId, setUserId] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [currentPage, setCurrentPage] = useState(0);
   const router = useRouter();
 
-  const [events, setEvents] = useState([]);
-
-  const [itemsPerPage, setItemsPerPage] = useState(3);
-  const totalItems =
-    events.invitedEvents?.length || events.createdEvents?.length || 6;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [user, setUser] = useState();
+  const { data: user, refetch } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchUser(userId),
+    enabled: !!userId,
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,17 +42,19 @@ const Events = () => {
       router.push("/login");
     } else {
       const data = jwtDecode(token);
-      setUser(data);
+      setUserId(data.id);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (user) {
       getEvents(user.id, user.email);
     }
+
     const handleResize = () => {
       setItemsPerPage(window.innerWidth < 640 ? 1 : 3);
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -73,15 +91,24 @@ const Events = () => {
     router.push("/home");
   };
 
+  const updateUser = () => {
+    refetch();
+  };
+
+  const totalItems =
+    events.invitedEvents?.length || events.createdEvents?.length || 6;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
   const startIdx = currentPage * itemsPerPage;
   const endIdx = startIdx + itemsPerPage;
   const currentItems = [
     (events?.createdEvents || []).slice(startIdx, endIdx),
     (events?.invitedEvents || []).slice(startIdx, endIdx),
   ];
+
   return (
     <div className="flex flex-col sm:flex-row  justify-between items-center w-full bg-white">
-      <Sidebar />
+      <Sidebar user={user} updateUser={updateUser} />
       {(!events?.createdEvents && !events?.invitedEvents) ||
       (events?.createdEvents?.length === 0 &&
         events?.invitedEvents.length === 0) ? (

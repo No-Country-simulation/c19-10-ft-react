@@ -1,6 +1,7 @@
 const UsersService = require("../services/users.service");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { CLIENT_BASE_URL } = process.env;
 
 const usersService = new UsersService();
 
@@ -112,7 +113,7 @@ const updatePassword = async (req, res) => {
     const token = jwt.sign({ email: email }, JWT_SECRET, {
       expiresIn: "15m",
     });
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `${CLIENT_BASE_URL}/reset-password?token=${token}`;
     if (email) await usersService.updatePassword(email, resetUrl);
     res
       .status(200)

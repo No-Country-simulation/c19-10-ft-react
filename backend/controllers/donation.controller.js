@@ -4,6 +4,8 @@ const {
 } = require("../payments/mercadopago.config");
 const UsersService = require("../services/users.service");
 
+const { API_BASE_URL } = process.env;
+
 const donationService = new DonationService();
 const userService = new UsersService();
 
@@ -120,11 +122,11 @@ const updateDonationStatus = async (req, res) => {
     const paymentStatus = req.query.status;
     const id = req.query.external_reference;
     await donationService.updateDonationStatus(id, paymentStatus);
-    if (isSubscription) {
+    if (isSubscription && userId) {
       await userService.updateUser(userId, { userPlan: "premium" });
-      res.redirect("http://localhost:3001/subscription");
+      res.redirect(`${API_BASE_URL}/subscription`);
     } else {
-      res.redirect(`http://localhost:3001/thank-you`);
+      res.redirect(`${API_BASE_URL}/thank-you`);
     }
   } catch (error) {
     res.status(400).json({ message: error.message, error });

@@ -33,8 +33,7 @@ const Home = () => {
 
   const {
     data: userData,
-    isError,
-    isLoading,
+
     refetch,
   } = useQuery({
     queryKey: ["user", userId],
@@ -61,13 +60,6 @@ const Home = () => {
     localStorage.removeItem("token");
     router.push("/");
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) {
-    console.error("Failed to fetch user data");
-    router.push("/login");
-    return null;
-  }
 
   const updateUser = () => {
     refetch();

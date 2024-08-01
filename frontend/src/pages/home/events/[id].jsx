@@ -7,6 +7,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import AddCommentForm from "@/components/AddCommentForm";
 import AddPostModal from "@/components/AddPostModal";
@@ -20,13 +21,31 @@ const sendDonationSchema = Yup.object().shape({
     .required("El monto es requerido."),
 });
 
+const fetchUser = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+  try {
+    const res = await axios.get(`${API_URL}/users/${userId}`);
+    return res.data.user;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching user");
+  }
+};
+
 const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const { data: user, refetch } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchUser(userId),
+    enabled: !!userId,
+  });
 
   const [isPostsModalOpen, setIsPostsModalOpen] = useState(false);
   const [selectedView, setSelectedView] = useState("invitations");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [user, setUser] = useState();
   const router = useRouter();
   const { id } = router.query;
   const [event, setEvent] = useState(null);
@@ -39,18 +58,16 @@ const EventDetail = () => {
   const openPostsModal = () => setIsPostsModalOpen(true);
   const closePostsModal = () => setIsPostsModalOpen(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      const data = jwtDecode(token);
-      setUser(data);
-    }
-  }, []);
-
   const goBack = () => {
     router.push("/home/events");
+  };
+
+  const updateUser = async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error("Error al actualizar el usuario:", error);
+    }
   };
 
   const getEventPosts = async (id) => {
@@ -67,9 +84,9 @@ const EventDetail = () => {
   const checkStr = (str) => {
     if (str) {
       const isSplitted = str.split(" ");
-      const simpleWord = isSplitted.length === 1;
-      return simpleWord;
+      return isSplitted.length === 1;
     }
+    return false;
   };
 
   const statusTranslation = {
@@ -140,6 +157,7 @@ const EventDetail = () => {
       return res.data.eventById;
     } catch (error) {
       console.error("Error fetching event data:", error);
+      return null;
     }
   };
 
@@ -149,6 +167,7 @@ const EventDetail = () => {
       return res.data.invitations;
     } catch (error) {
       console.error("Error fetching invitations list:", error);
+      return [];
     }
   };
 
@@ -166,19 +185,39 @@ const EventDetail = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    const data = jwtDecode(token);
+    setUserId(data.id);
+  }, [router]);
+
+  useEffect(() => {
     if (id) {
-      getEventData(id).then((data) => setEvent(data));
-      getInvitationsList(id).then((data) => setInvitations(data));
-      getEventPosts(id);
+      const fetchData = async () => {
+        try {
+          const eventData = await getEventData(id);
+          setEvent(eventData);
+          const invitationsData = await getInvitationsList(id);
+          setInvitations(invitationsData);
+          await getEventPosts(id);
+        } catch (error) {
+          console.error("Error fetching event data:", error);
+        }
+      };
+      fetchData();
     }
   }, [id]);
 
   useEffect(() => {
-    const isEmailInvited = invitations.some(
-      (invite) => invite.invitedEmail === user.email
-    );
-
-    setDisableInviteBtn(isEmailInvited);
+    if (user && invitations.length > 0) {
+      const isEmailInvited = invitations.some(
+        (invite) => invite.invitedEmail === user.email
+      );
+      setDisableInviteBtn(isEmailInvited);
+    }
   }, [user, invitations]);
 
   const renderContent = () => {
@@ -436,7 +475,7 @@ const EventDetail = () => {
 
   return (
     <section className="flex flex-col sm:flex-row justify-center items-start w-full bg-white">
-      <Sidebar />
+      <Sidebar user={user} updateUser={updateUser} />
       <div className="md:min-w-[230px] flex justify-end pt-28 md:pt-4 pl-12 ">
         <button
           onClick={goBack}

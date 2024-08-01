@@ -1,6 +1,6 @@
 const { config } = require("../config/config.js");
 const { MercadoPagoConfig, Preference } = require("mercadopago");
-
+const { API_BASE_URL } = process.env;
 const client = new MercadoPagoConfig({
   accessToken: `${config.mpToken}`,
   options: { timeout: 5000 },
@@ -18,9 +18,12 @@ const donation = async ({ amount, id, isSubscription, userId }) => {
       },
     ],
     back_urls: {
-      success: `http://localhost:3001/api/v1/donation/success?isSubscription=${isSubscription}&userId=${userId}`,
-      failure: `http://localhost:3001/api/v1/donation/failure`,
-      pending: `http://localhost:3001/api/v1/donation/pending`,
+      success:
+        isSubscription && userId
+          ? `${API_BASE_URL}/api/v1/donation/success?isSubscription=${isSubscription}&userId=${userId}`
+          : `${API_BASE_URL}/api/v1/donation/success`,
+      failure: `${API_BASE_URL}/api/v1/donation/failure`,
+      pending: `${API_BASE_URL}/api/v1/donation/pending`,
     },
     auto_return: "approved",
     external_reference: id,

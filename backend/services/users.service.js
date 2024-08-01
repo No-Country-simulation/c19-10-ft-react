@@ -42,7 +42,7 @@ class UsersService {
       const mailObject = {
         email: email,
         subject: "Celebria's Team: Reset password",
-        template: "LogInMessage",
+        template: "UpdatePassword",
         context: {
           name: "",
           url: url,
