@@ -15,9 +15,6 @@ El principal objetivo de nuestra app es simplificar el proceso de organización 
 
 [Celebria Web 🔗](https://celebria-app-frontend.vercel.app/)
 
-
-## Desarrolladores
-
 ## Desarrolladores
 
 - [![guidounion6](https://img.shields.io/badge/Dev_Backend-%40guidounion6-blue?style=flat&logo=github&logoColor=white)](https://github.com/guidounion6)
