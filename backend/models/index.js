@@ -5,22 +5,24 @@ const { User, userSchema } = require("./users.model");
 const { Event, eventSchema } = require("./event.model");
 const { Invitation, invitationSchema } = require("./invitation.model");
 const { Donation, donationSchema } = require("./donation.model");
-const { Message, messageSchema } = require("./message.model");
+const { Comment, commentSchema } = require("./comment.model");
 const { Post, postSchema } = require("./post.model");
-const { PostImages, postImagesSchema } = require("./postImages.model");
-const { Image, imageSchema } = require('./images.model');
-const initModels = require('./initModels');
+const { Salon, salonSchema } = require("./salon.model");
+const { SalonEvent, salonEventSchema } = require("./salonEvent.model");
+const { SalonImage, salonImageSchema } = require("./salonImage.model");
+
+const initModels = require("./initModels");
 
 function setupModels(sequelize) {
   User.init(userSchema, User.config(sequelize));
   Event.init(eventSchema, Event.config(sequelize));
   Invitation.init(invitationSchema, Invitation.config(sequelize));
   Donation.init(donationSchema, Donation.config(sequelize));
-  Message.init(messageSchema, Message.config(sequelize));
+  Comment.init(commentSchema, Comment.config(sequelize));
   Post.init(postSchema, Post.config(sequelize));
-  PostImages.init(postImagesSchema, PostImages.config(sequelize));
-  Image.init(imageSchema, Image.config(sequelize));
-
+  Salon.init(salonSchema, Salon.config(sequelize));
+  SalonEvent.init(salonEventSchema, SalonEvent.config(sequelize));
+  SalonImage.init(salonImageSchema, SalonImage.config(sequelize));
   initModels(sequelize);
 }
 

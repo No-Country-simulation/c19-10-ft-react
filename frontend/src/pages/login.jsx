@@ -63,10 +63,14 @@ const LoginPage = () => {
                 "http://localhost:3001/api/v1/users/login",
                 values
               );
-              const { accessToken, refreshToken } = response.data;
+              const { accessToken, refreshToken } = response.data.tokens;
               localStorage.setItem("token", accessToken);
               localStorage.setItem("refreshToken", refreshToken);
-              router.push("/home");
+              if(response.data.userType === "salon") {
+                router.push("/dashboard")
+              } else {
+                router.push("/home");
+              }
             } catch (error) {
               console.error("Error en el login:", error);
             } finally {

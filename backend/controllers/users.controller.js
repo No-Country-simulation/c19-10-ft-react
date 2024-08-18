@@ -28,6 +28,9 @@ const generateTokens = (user) => {
 const register = async (req, res) => {
   try {
     const user = await usersService.register(req.body);
+    if(!user){
+      res.status(400).json({message: "Something went wrong, email may already exist"})
+    }
 
     res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
@@ -43,7 +46,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
     const tokens = generateTokens(user);
-    res.json(tokens);
+    res.json({tokens: tokens, userType: user.userType});
   } catch (error) {
     res.status(400).json({ message: "Error logging in", error });
   }

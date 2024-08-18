@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Logo from "../../public/CelebriaWhite.png";
 import BackgroundImage from "../../public/party.jpg";
+import SalonBackgroundImage from "../../public/salon.jpg";
 import axios from "axios";
 
 const LoginSchema = Yup.object().shape({
@@ -18,6 +19,7 @@ const LoginSchema = Yup.object().shape({
 const LoginPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [salonRegister, setSalonRegister] = useState(false)
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -27,7 +29,7 @@ const LoginPage = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center"
       style={{
-        backgroundImage: `url(${BackgroundImage.src})`,
+        backgroundImage: `url(${salonRegister ? SalonBackgroundImage.src : BackgroundImage.src })`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -51,16 +53,20 @@ const LoginPage = () => {
 
       {/* Contenedor */}
       <div className="max-w-sm w-full p-6 bg-white rounded-lg shadow-md mt-10">
-        <h1 className="text-2xl text-black mb-6">Registrarse</h1>
+        <h1 className="text-2xl text-black mb-6">Registrarse {salonRegister ? "como salon" : null}</h1>
         <Formik
           initialValues={{ name: "", email: "", password: "" }}
           validationSchema={LoginSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              console.log("Valores del formulario:", values);
+              const dataToSubmit = {
+                ...values,
+                userType: salonRegister ? 'salon' : 'user'
+              };
+              console.log("Valores del formulario:", dataToSubmit);
               await axios.post(
                 "http://localhost:3001/api/v1/users/register",
-                values
+                dataToSubmit
               );
               router.push("/home");
             } catch (error) {
@@ -77,7 +83,7 @@ const LoginPage = () => {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Nombre
+                  {salonRegister ? "Compañía" : "Nombre"}
                 </label>
                 <Field
                   type="input"
@@ -138,12 +144,17 @@ const LoginPage = () => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
+              
+              <div className="mt-4 text-center text-primary hover:underline p-2 cursor-pointer" onClick={()=> setSalonRegister(!salonRegister)}>
+              {salonRegister ? "Registrarse como usuario " : "Registrarse como salon 🥂"}
+              </div>
+
               <button
                 type="submit"
                 className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-100"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Cargando..." : "Registrarse"}
+                {isSubmitting ? "Cargando..." : `Registrarse`}
               </button>
             </Form>
           )}

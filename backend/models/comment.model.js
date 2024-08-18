@@ -1,31 +1,31 @@
 const { Model, DataTypes } = require("sequelize");
 const User = require("./users.model");
-const Event = require("./event.model");
+const Post = require("./post.model");
 
-const MESSAGE_TABLE = "message";
+const COMMENT_TABLE = "comment";
 
-class Message extends Model {
+class Comment extends Model {
   static config(sequelize) {
     return {
       sequelize,
-      tableName: MESSAGE_TABLE,
-      modelName: "Message",
+      tableName: COMMENT_TABLE,
+      modelName: "Comment",
       timestamps: true,
     };
   }
 }
 
-const messageSchema = {
+const commentSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
   },
-  message: {
+  content: {
+    allowNull: false,
     type: DataTypes.TEXT,
-    field: "message",
+    field: "content",
   },
   userId: {
     allowNull: false,
@@ -38,20 +38,20 @@ const messageSchema = {
     onUpdate: "CASCADE",
     field: "userId",
   },
-  eventId: {
+  postId: {
     allowNull: false,
     type: DataTypes.UUID,
     references: {
-      model: Event,
+      model: Post,
       key: "id",
     },
     onDelete: "SET NULL",
     onUpdate: "CASCADE",
-    field: "eventId",
+    field: "postId",
   },
 };
 
 module.exports = {
-  Message,
-  messageSchema,
+  Comment,
+  commentSchema,
 };

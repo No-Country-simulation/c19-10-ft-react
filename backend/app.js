@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 
 dotenv.config();
 
@@ -15,6 +16,10 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Backend with Node + Express + PostgreSQL");
+});
+
+app.get("/thank-you", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/thank-you.html"));
 });
 
 routerApi(app);
